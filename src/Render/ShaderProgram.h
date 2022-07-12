@@ -5,7 +5,7 @@
 #include <string>
 #include <iostream>
 
-namespace Renderer      
+namespace Renderer
 {
     class ShaderProgram
     {
@@ -13,14 +13,19 @@ namespace Renderer
         ShaderProgram(){};
         ShaderProgram(const std::string &vertexShaderSource, const std::string &fragmentShaderSource);
 
-        bool isCompiled() const { return isCompiledFlag; }
+        bool isCompiled() const { return isCompiled_; }
+        void use() const { glUseProgram(ID_); }
 
     private:
         bool compileShader(const std::string &source, const GLenum shaderType, GLuint &shaderID);
 
-        GLuint ID;
-        bool isCompiledFlag = false;
+        GLuint ID_;
+        bool isCompiled_ = false;
     };
+
+    GLuint createVBO(float *vertexes, GLuint size);
+    GLuint createVAO(float *vertexes, GLuint size);
+    bool loadSource(const char *fileName, std::string &source);
 }
 
 #endif
