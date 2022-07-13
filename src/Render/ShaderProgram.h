@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <string>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 namespace Renderer
 {
@@ -25,7 +27,7 @@ namespace Renderer
 
     GLuint createVBO(float *vertexes, GLuint size);
     GLuint createVAO(float *vertexes, GLuint size);
-    bool loadSource(const char *fileName, std::string &source);
+    bool loadSource(const std::string &filePath, std::string &source);
 }
 
 #endif

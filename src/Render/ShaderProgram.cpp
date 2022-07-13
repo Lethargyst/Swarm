@@ -5,19 +5,20 @@ namespace Renderer
     ShaderProgram::ShaderProgram(const std::string &vertexShaderSource, const std::string &fragmentShaderSource)
     {
         GLuint vertexShader, fragmentShader;
-        if (!compileShader(vertexShaderSource, GL_VERTEX_SHADER, vertexShader)) return;
-        if (!compileShader(fragmentShaderSource, GL_FRAGMENT_SHADER, fragmentShader)) return;
+        if (!compileShader(vertexShaderSource, GL_VERTEX_SHADER, vertexShader))
+            return;
+        if (!compileShader(fragmentShaderSource, GL_FRAGMENT_SHADER, fragmentShader))
+            return;
 
+        ID_ = glCreateProgram();
         glAttachShader(ID_, vertexShader);
         glAttachShader(ID_, fragmentShader);
         glLinkProgram(ID_);
 
         int success;
-        char infoLog[512];
         glGetProgramiv(ID_, GL_LINK_STATUS, &success);
         if (!success) {
-            glGetProgramInfoLog(ID_, 512, NULL, infoLog);
-            std::cerr << "Shader Program: LINKING ERROR\n" << infoLog << std::endl;
+            std::cerr << "Shader Program: LINKING ERROR\n" << std::endl;
             return;
         }
 
@@ -29,17 +30,15 @@ namespace Renderer
     bool ShaderProgram::compileShader(const std::string &source, const GLenum shaderType, GLuint &shaderID)
     {
         const char *c_source = source.c_str();
-        
+
         shaderID = glCreateShader(shaderType);
         glShaderSource(shaderID, 1, &c_source, nullptr);
         glCompileShader(shaderID);
 
         int success;
-        char infoLog[512];
         glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
         if (!success) {
-            glGetShaderInfoLog(shaderID, 512, nullptr, infoLog);
-            std::cerr << shaderType << ": COMPILATION ERROR\n" << infoLog << std::endl;
+            std::cerr << "Shader Program: COMPILATION ERROR\n" << std::endl;
             return false;
         }
         return true;
@@ -66,24 +65,19 @@ namespace Renderer
         return VAO;
     }
 
-    bool loadSource(const char *fileName, std::string &source)
+    bool loadSource(const std::string &filePath, std::string &source)
     {
-        source = "";
-        FILE* file = fopen(fileName, "r");
+        std::ifstream file;
+        file.open(filePath);
         if (!file) {
             std::cerr << "Shader Program: CAN'T OPEN FILE" << std::endl;
             return false;
         }
 
-        fseek(file, 0, SEEK_END);
-        long int size = ftell(file);
-        fseek(file, 0, SEEK_SET);
-        void *buffer = malloc(size + 1);
-        fread(buffer, 1, size, file);
-        fclose(file);
-        ((char*)buffer)[size] = '\0';
-
-        source = (char*)buffer;
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+        source = buffer.str();
+        file.close();
         return true;
     }
 }
