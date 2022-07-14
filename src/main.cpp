@@ -1,36 +1,12 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <iostream>
 #include "Render/ShaderProgram.h"
+#include "Render/Window.h"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
-
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
 
 int main(int argc, char* argv[])
 {
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-
-    GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Test", NULL, NULL);
-    if (window == NULL)
-    {
-        std::cerr << "Main: CAN'T CREATE WINDOW" << std::endl;
-        glfwTerminate();
-        return 1;
-    }
-    glfwMakeContextCurrent(window);
-
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    Renderer::initGLFW(3, 3);
+    Window window(800, 600, "Test");
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -52,9 +28,9 @@ int main(int argc, char* argv[])
 
     GLuint VAO = Renderer::createVAO(vertices, sizeof(vertices));
 
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window.glWindow_))
     {
-        processInput(window);
+        window.processInput();
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -62,22 +38,11 @@ int main(int argc, char* argv[])
         shader.use();
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        glfwSwapBuffers(window);
+    
+        glfwSwapBuffers(window.glWindow_);
         glfwPollEvents();
     }
 
     glfwTerminate();
     return 0;
-}
-
-void processInput(GLFWwindow *window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
 }

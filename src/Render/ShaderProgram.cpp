@@ -2,7 +2,7 @@
 
 namespace Renderer
 {
-    ShaderProgram::ShaderProgram(const std::string &vertexShaderSource, const std::string &fragmentShaderSource)
+    ShaderProgram::ShaderProgram(const std::string& vertexShaderSource, const std::string& fragmentShaderSource)
     {
         GLuint vertexShader, fragmentShader;
         if (!compileShader(vertexShaderSource, GL_VERTEX_SHADER, vertexShader))
@@ -27,9 +27,9 @@ namespace Renderer
         isCompiled_ = true;
     }
 
-    bool ShaderProgram::compileShader(const std::string &source, const GLenum shaderType, GLuint &shaderID)
+    bool ShaderProgram::compileShader(const std::string& source, const GLenum shaderType, GLuint& shaderID)
     {
-        const char *c_source = source.c_str();
+        const char* c_source = source.c_str();
 
         shaderID = glCreateShader(shaderType);
         glShaderSource(shaderID, 1, &c_source, nullptr);
@@ -44,7 +44,7 @@ namespace Renderer
         return true;
     }
 
-    GLuint createVBO(float *vertexes, GLuint size)
+    GLuint createVBO(float* vertexes, GLuint size)
     {
         GLuint VBO;
         glGenBuffers(1, &VBO);
@@ -53,7 +53,7 @@ namespace Renderer
         return VBO;
     }
 
-    GLuint createVAO(float *vertexes, GLuint size)
+    GLuint createVAO(float* vertexes, GLuint size)
     {
         GLuint VAO;
         glGenVertexArrays(1, &VAO);
@@ -65,7 +65,7 @@ namespace Renderer
         return VAO;
     }
 
-    bool loadSource(const std::string &filePath, std::string &source)
+    bool loadSource(const std::string& filePath, std::string& source)
     {
         std::ifstream file;
         file.open(filePath);
@@ -79,5 +79,17 @@ namespace Renderer
         source = buffer.str();
         file.close();
         return true;
+    }
+
+    void initGLFW(const int major, const int minor)
+    {
+        glfwInit();
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    #ifdef __APPLE__
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    #endif
     }
 }
