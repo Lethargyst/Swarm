@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>
 #include "Render/ShaderProgram.h"
 #include "Render/Window.h"
 
@@ -17,27 +18,43 @@ int main(int argc, char* argv[])
     std::string vertexShaderSource, fragmentShaderSource;
     Renderer::loadSource("../src/Render/Shaders/VertexShader.vert", vertexShaderSource);
     Renderer::loadSource("../src/Render/Shaders/FragmentShader.frag", fragmentShaderSource);
-
     Renderer::ShaderProgram shader(vertexShaderSource, fragmentShaderSource);
 
-    float vertices[] = {
-        -0.5f, -0.5f, 0.0f, // left  
-         0.5f, -0.5f, 0.0f, // right 
-         0.0f,  0.5f, 0.0f  // top   
-    }; 
+    float vertexes[] = {
+        // positions         // colors
+         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
+         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   // top 
+    };
+    GLuint VBO = Renderer::createVBO(vertexes, sizeof(vertexes), GL_STATIC_DRAW);
+    GLuint VAO = Renderer::createVAO();
 
-    GLuint VAO = Renderer::createVAO(vertices, sizeof(vertices));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     while (!glfwWindowShouldClose(window.glWindow_))
     {
         window.processInput();
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        
         glClear(GL_COLOR_BUFFER_BIT);
 
         shader.use();
+
+        float timeValue = glfwGetTime();
+        float redValue= sin(timeValue) / 2.0f + 0.5f;
+        float greenValue = sin(timeValue + 0.5f) / 2.0f + 0.5f;
+        float blueValue = sin(timeValue + 1.0f) / 2.0f + 0.5f;
+        int vertexColorLocation = glGetUniformLocation(shader.getID(), "color");
+        glUniform3f(vertexColorLocation, 1.0f, 1.0f, blueValue);
+
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
+        
     
         glfwSwapBuffers(window.glWindow_);
         glfwPollEvents();

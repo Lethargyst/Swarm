@@ -44,30 +44,26 @@ namespace Renderer
         return true;
     }
 
-    GLuint createVBO(float* vertexes, GLuint size)
+    GLuint createVBO(float* vertexes, GLuint size, GLenum usage)
     {
         GLuint VBO;
         glGenBuffers(1, &VBO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, size, vertexes, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, size, vertexes, usage);
         return VBO;
     }
 
-    GLuint createVAO(float* vertexes, GLuint size)
+    GLuint createVAO()
     {
         GLuint VAO;
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
-
-        GLuint VBO = createVBO(vertexes, size);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-        glEnableVertexAttribArray(0);
         return VAO;
     }
 
     bool loadSource(const std::string& filePath, std::string& source)
     {
-        std::ifstream file;
+        std::ifstream file; 
         file.open(filePath);
         if (!file) {
             std::cerr << "Shader Program: CAN'T OPEN FILE" << std::endl;
