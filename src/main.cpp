@@ -2,11 +2,12 @@
 #include <math.h>
 #include "Render/ShaderProgram.h"
 #include "Render/Window.h"
+#include "Math/Math.h"
 
 
 int main(int argc, char* argv[])
 {
-    Renderer::initGLFW(3, 3);
+    Renderer::initGLFW(4, 6);
     Window window(800, 600, "Test");
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -24,8 +25,11 @@ int main(int argc, char* argv[])
         // positions         // colors
          0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right
         -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
-         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   // top 
+         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  // top 
     };
+    // float vertexes[] = {
+    //     0.0f, 0.0f, 0.0f,  1.0f, 0.0f, 0.0f
+    // };
     GLuint VBO = Renderer::createVBO(vertexes, sizeof(vertexes), GL_STATIC_DRAW);
     GLuint VAO = Renderer::createVAO();
 
@@ -45,15 +49,8 @@ int main(int argc, char* argv[])
 
         shader.use();
 
-        float timeValue = glfwGetTime();
-        float redValue= sin(timeValue) / 2.0f + 0.5f;
-        float greenValue = sin(timeValue + 0.5f) / 2.0f + 0.5f;
-        float blueValue = sin(timeValue + 1.0f) / 2.0f + 0.5f;
-        int vertexColorLocation = glGetUniformLocation(shader.getID(), "color");
-        glUniform3f(vertexColorLocation, 1.0f, 1.0f, blueValue);
-
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 3);
         
     
         glfwSwapBuffers(window.glWindow_);

@@ -7,12 +7,15 @@ set(CMAKE_CXX_STANDART 17)
 
 add_executable( ${PROJECT_NAME} 
     src/main.cpp
+    src/Objects/Shapes.h
+    src/Objects/Shapes.cpp
     src/Render/ShaderProgram.h
     src/Render/ShaderProgram.cpp
     src/Render/Window.h
     src/Render/Window.cpp
     src/Render/Shaders/VertexShader.vert
     src/Render/Shaders/FragmentShader.frag
+
     
 )
 
