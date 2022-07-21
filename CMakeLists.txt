@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDART 17)
 
 add_executable( ${PROJECT_NAME} 
     src/main.cpp
+    src/Math/Vectors.h
+    src/Math/Vectors.cpp
     src/Objects/Shapes.h
     src/Objects/Shapes.cpp
     src/Render/ShaderProgram.h

@@ -2,7 +2,7 @@
 #include <math.h>
 #include "Render/ShaderProgram.h"
 #include "Render/Window.h"
-#include "Math/Math.h"
+#include "Math/Vectors.h"
 
 
 int main(int argc, char* argv[])
