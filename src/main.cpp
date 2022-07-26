@@ -1,8 +1,10 @@
 #include <iostream>
 #include <math.h>
+#include <chrono>
+#include "Math/Vectors.h"
 #include "Render/ShaderProgram.h"
 #include "Render/Window.h"
-#include "Math/Vectors.h"
+#include "Scene/Scene.h"
 
 
 int main(int argc, char* argv[])
@@ -21,40 +23,38 @@ int main(int argc, char* argv[])
     Renderer::loadSource("../src/Render/Shaders/FragmentShader.frag", fragmentShaderSource);
     Renderer::ShaderProgram shader(vertexShaderSource, fragmentShaderSource);
 
+
     float vertexes[] = {
-        // positions         // colors
-         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
-         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  // top 
+         0.5f, -0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f,
     };
-    // float vertexes[] = {
-    //     0.0f, 0.0f, 0.0f,  1.0f, 0.0f, 0.0f
-    // };
-    GLuint VBO = Renderer::createVBO(vertexes, sizeof(vertexes), GL_STATIC_DRAW);
-    GLuint VAO = Renderer::createVAO();
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    Scene& scene = Scene::initialize();
 
+    scene.initBuffers(1);
+    scene.setBufferData(0, sizeof(vertexes), vertexes, GL_DYNAMIC_DRAW);
+    scene.configBuffer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+
+    float alpha = 0.0f;
     while (!glfwWindowShouldClose(window.glWindow_))
     {
+        auto start_time = std::chrono::steady_clock::now();
+
         window.processInput();
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        
-        glClear(GL_COLOR_BUFFER_BIT);
-
+        scene.update(alpha);
         shader.use();
-
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 3);
-        
+        scene.render();
     
         glfwSwapBuffers(window.glWindow_);
         glfwPollEvents();
+
+        alpha += 0.001f;
+
+        auto end_time = std::chrono::steady_clock::now();
+        auto elapsed_ns = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+        printf("FPS: %f\n", 1.0f / (elapsed_ns.count() / 1e6));
     }
 
     glfwTerminate();

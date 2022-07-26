@@ -9,16 +9,16 @@ add_executable( ${PROJECT_NAME}
     src/main.cpp
     src/Math/Vectors.h
     src/Math/Vectors.cpp
-    src/Objects/Shapes.h
-    src/Objects/Shapes.cpp
+    src/Objects/Objects.h
+    src/Objects/Objects.cpp
+    src/Objects/Swarm.h
+    src/Objects/Swarm.cpp
     src/Render/ShaderProgram.h
     src/Render/ShaderProgram.cpp
     src/Render/Window.h
-    src/Render/Window.cpp
-    src/Render/Shaders/VertexShader.vert
-    src/Render/Shaders/FragmentShader.frag
-
-    
+    src/Render/Window.cpp    
+    src/Scene/Scene.h
+    src/Scene/Scene.cpp
 )
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)

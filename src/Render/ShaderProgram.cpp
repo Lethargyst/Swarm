@@ -44,23 +44,6 @@ namespace Renderer
         return true;
     }
 
-    GLuint createVBO(float* vertexes, GLuint size, GLenum usage)
-    {
-        GLuint VBO;
-        glGenBuffers(1, &VBO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, size, vertexes, usage);
-        return VBO;
-    }
-
-    GLuint createVAO()
-    {
-        GLuint VAO;
-        glGenVertexArrays(1, &VAO);
-        glBindVertexArray(VAO);
-        return VAO;
-    }
-
     bool loadSource(const std::string& filePath, std::string& source)
     {
         std::ifstream file; 

@@ -26,8 +26,6 @@ namespace Renderer
         bool isCompiled_ = false;
     };
 
-    GLuint createVBO(float* vertexes, GLuint size, GLenum usage);
-    GLuint createVAO();
     bool loadSource(const std::string& filePath, std::string& source);
     void initGLFW(const int major, const int minor);
 }
