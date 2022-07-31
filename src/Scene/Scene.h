@@ -5,11 +5,12 @@
 #include <vector>
 #include "../Objects/Objects.h"
 #include "../Render/ShaderProgram.h"
+#include "../Render/Window.h"
 
 class Scene
 {
 public:
-    static Scene& initialize();
+    static Scene& initialize(Window* window, GLuint shader);
 
     void initBuffers(GLsizei num);
     void setBufferData(GLint bufferIndex, GLsizei size, void* data, GLenum usage);
@@ -21,6 +22,7 @@ public:
 
 private:
     Scene() {}
+    Scene(Window* window, GLuint shader) : window_(window), shader_(shader) {} 
     ~Scene();
 
     Scene(const Scene&) = delete;
@@ -28,7 +30,9 @@ private:
 
     static std::vector<Object*> objects;
     static float* renderInfo;
+    Window* window_;
     GLuint *VAO_, *VBO_; 
+    GLuint shader_;
     GLsizei buffersAmount_;
 };
 

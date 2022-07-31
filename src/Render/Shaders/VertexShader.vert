@@ -1,11 +1,13 @@
-#version 330 core
-layout (location = 0) in vec3 aPos;   // the position variable has attribute position 0
-// layout (location = 1) in vec3 aColor; // z color variable has attribute position 1
-  
-out vec3 color; // output a color to the fragment shader
+#version 460 
+layout (location = 0) in vec2 aPos;  
+
+out vec2 pos;
+
+uniform vec2 resolution;
 
 void main()
 {
-    gl_Position = vec4(aPos, 1.0);
-    color = aPos; 
+    gl_PointSize = abs(aPos.x * 100) + 10;
+    gl_Position = vec4(aPos, 0.0, 1.0);
+    pos = aPos;
 }       

@@ -2,23 +2,33 @@
 
 namespace Renderer
 {
-    ShaderProgram::ShaderProgram(const std::string& vertexShaderSource, const std::string& fragmentShaderSource)
+    ShaderProgram::ShaderProgram(const std::string& vertexShaderSource, 
+                                 const std::string& fragmentShaderSource,
+                                 const std::string& geometryShaderSource)
     {
-        GLuint vertexShader, fragmentShader;
+        GLuint vertexShader, fragmentShader, geometryShader;
         if (!compileShader(vertexShaderSource, GL_VERTEX_SHADER, vertexShader))
             return;
         if (!compileShader(fragmentShaderSource, GL_FRAGMENT_SHADER, fragmentShader))
+            return;
+        if (!compileShader(geometryShaderSource, GL_GEOMETRY_SHADER, geometryShader))
             return;
 
         ID_ = glCreateProgram();
         glAttachShader(ID_, vertexShader);
         glAttachShader(ID_, fragmentShader);
+        glAttachShader(ID_, geometryShader);
         glLinkProgram(ID_);
 
         int success;
+        char infoLog[512];
         glGetProgramiv(ID_, GL_LINK_STATUS, &success);
         if (!success) {
-            std::cerr << "Shader Program: LINKING ERROR\n" << std::endl;
+            glGetShaderInfoLog(ID_, 512, NULL, infoLog);
+            std::cerr << "Shader Program: LINKING ERROR\n" 
+                        << "----------------------------------\n" 
+                        << infoLog 
+                        << "----------------------------------\n";
             return;
         }
 
@@ -36,9 +46,14 @@ namespace Renderer
         glCompileShader(shaderID);
 
         int success;
+        char infoLog[512];
         glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
         if (!success) {
-            std::cerr << "Shader Program: COMPILATION ERROR\n" << std::endl;
+            glGetShaderInfoLog(shaderID, 512, NULL, infoLog);
+            std::cerr << "Shader Program: COMPILATION ERROR\n" 
+                        << "----------------------------------\n" 
+                        << infoLog 
+                        << "----------------------------------\n";
             return false;
         }
         return true;

@@ -14,7 +14,9 @@ namespace Renderer
     {
     public:
         ShaderProgram(){};
-        ShaderProgram(const std::string& vertexShaderSource, const std::string& fragmentShaderSource);
+        ShaderProgram(const std::string& vertexShaderSource, 
+                      const std::string& fragmentShaderSource,
+                      const std::string& geometryShaderSource);
 
         GLuint const getID() const { return ID_; }  
         bool isCompiled() const { return isCompiled_; }

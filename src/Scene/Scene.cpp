@@ -3,9 +3,9 @@
 std::vector<Object*> Scene::objects;
 float* Scene::renderInfo;
 
-Scene& Scene::initialize()
+Scene& Scene::initialize(Window* window, GLuint shader)
 {
-    static Scene sceneObj;
+    static Scene sceneObj(window, shader);
     return sceneObj;
 }
 
@@ -14,6 +14,7 @@ Scene::~Scene()
     if (renderInfo) delete[] renderInfo; 
     if (VAO_) delete[] VAO_;
     if (VBO_) delete VBO_;
+    if (window_) delete window_;
 }
 
 void Scene::initBuffers(GLsizei num)
@@ -50,22 +51,26 @@ void Scene::updateBuffer(GLint bufferIndex, GLsizei size, void* data, GLenum usa
 void Scene::update(const float alpha)
 {
     for (size_t i = 0; i < 3; ++i) {
-        renderInfo[3 * i] = cosf((2.0f / 3.0f * M_PI) * i + alpha) / 2;
-        renderInfo[3 * i + 1] = sinf((2.0f / 3.0f * M_PI) * i + alpha) / 2;
-        renderInfo[3 * i + 2] = 0.0f;
+        renderInfo[2 * i] = cosf((2.0f / 3.0f * M_PI) * i + alpha) / 2;
+        renderInfo[2 * i + 1] = sinf((2.0f / 3.0f * M_PI) * i + alpha) / 2;
     }   
 }
 
 void Scene::render() const
 {
+    vec2 resolution = window_->getResolution();
+    glUniform2f(glGetUniformLocation(shader_, "resolution"), resolution.x, resolution.y);
+
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO_[0]);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, 9 * sizeof(float), renderInfo);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, 6 * sizeof(float), renderInfo);
 
     for (GLsizei i = 0; i < buffersAmount_; ++i) {
         glBindVertexArray(VAO_[i]);
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 3);
+        glDrawArrays(GL_POINTS, 0, 3);
     }
 }
