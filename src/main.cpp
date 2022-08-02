@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
          0.0f,  0.5f,
     };
 
-    Scene& scene = Scene::initialize(&window, shader.getID());
+    Scene& scene = Scene::initialize(&window, &shader);
 
     scene.initBuffers(1);
     scene.setBufferData(0, sizeof(vertexes), vertexes, GL_DYNAMIC_DRAW);
@@ -39,15 +39,9 @@ int main(int argc, char* argv[])
     while (!glfwWindowShouldClose(window.glWindow_))
     {
         auto start_time = std::chrono::steady_clock::now();
-
-        window.processInput();
-
+        
         scene.update(alpha);
-        shader.use();
-        scene.render();
-    
-        glfwSwapBuffers(window.glWindow_);
-        glfwPollEvents();
+        scene.render(); 
 
         alpha += 0.001f;
         auto end_time = std::chrono::steady_clock::now();

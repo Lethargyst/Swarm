@@ -1,9 +1,8 @@
 #include "Scene.h"
 
-std::vector<Object*> Scene::objects;
 float* Scene::renderInfo;
 
-Scene& Scene::initialize(Window* window, GLuint shader)
+Scene& Scene::initialize(Window* window, Renderer::ShaderProgram* shader)
 {
     static Scene sceneObj(window, shader);
     return sceneObj;
@@ -50,21 +49,26 @@ void Scene::updateBuffer(GLint bufferIndex, GLsizei size, void* data, GLenum usa
 
 void Scene::update(const float alpha)
 {
-    for (size_t i = 0; i < 3; ++i) {
-        renderInfo[2 * i] = cosf((2.0f / 3.0f * M_PI) * i + alpha) / 2;
-        renderInfo[2 * i + 1] = sinf((2.0f / 3.0f * M_PI) * i + alpha) / 2;
-    }   
+    window_->processInput();
+
+    for (std::size_t i = 0; i < Ant::getAmount(); ++i)
+        ants[i]->update(alpha);
+    for (std::size_t i = 0; i < Source::getAmount(); ++i) 
+        sources[i]->update(alpha);
 }
 
 void Scene::render() const
 {
-    vec2 resolution = window_->getResolution();
-    glUniform2f(glGetUniformLocation(shader_, "resolution"), resolution.x, resolution.y);
+    shader_->use();
 
-    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    vec2 resolution = window_->getResolution();
+    glUniform2f(glGetUniformLocation(shader_->getID(), "resolution"), resolution.x, resolution.y);
+    //---------------------------------------
+
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO_[0]);
     glBufferSubData(GL_ARRAY_BUFFER, 0, 6 * sizeof(float), renderInfo);
@@ -73,4 +77,8 @@ void Scene::render() const
         glBindVertexArray(VAO_[i]);
         glDrawArrays(GL_POINTS, 0, 3);
     }
+
+    //---------------------------------------
+    glfwSwapBuffers(window_->glWindow_);
+    glfwPollEvents();
 }

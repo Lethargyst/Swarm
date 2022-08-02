@@ -3,14 +3,14 @@
 
 #include <glad/glad.h>
 #include <vector>
-#include "../Objects/Objects.h"
+#include "../Objects/Swarm.h"
 #include "../Render/ShaderProgram.h"
 #include "../Render/Window.h"
 
 class Scene
 {
 public:
-    static Scene& initialize(Window* window, GLuint shader);
+    static Scene& initialize(Window* window, Renderer::ShaderProgram* shader);
 
     void initBuffers(GLsizei num);
     void setBufferData(GLint bufferIndex, GLsizei size, void* data, GLenum usage);
@@ -22,17 +22,19 @@ public:
 
 private:
     Scene() {}
-    Scene(Window* window, GLuint shader) : window_(window), shader_(shader) {} 
+    Scene(Window* window, Renderer::ShaderProgram* shader) : window_(window), shader_(shader) {} 
     ~Scene();
 
     Scene(const Scene&) = delete;
     Scene& operator=(const Scene&) = delete; 
 
-    static std::vector<Object*> objects;
     static float* renderInfo;
+
+    std::vector<Ant*> ants;
+    std::vector<Source*> sources;
     Window* window_;
+    Renderer::ShaderProgram* shader_;
     GLuint *VAO_, *VBO_; 
-    GLuint shader_;
     GLsizei buffersAmount_;
 };
 

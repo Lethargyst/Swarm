@@ -6,8 +6,10 @@
 struct vec2 
 {
     vec2(const vec2& other) : x(other.x), y(other.y) {}
-    vec2(float x = 0.0f, float y = 0.0f) : x(x), y(y) {}
-
+    vec2(float x, float y) : x(x), y(y) {}
+    vec2(float value) : x(value), y(value) {}
+    vec2(){}
+    
     vec2& operator=(const vec2& r);
     vec2& operator+=(const vec2& r);
     vec2& operator-=(const vec2& r);
@@ -17,14 +19,16 @@ struct vec2
     float length() const;
     float lengthSq() const;
 
-    float x, y; 
+    float x = 0.0f, y = 0.0f; 
 };
 
 struct vec3 
 { 
     vec3(const vec3& other) : x(other.x), y(other.y) {}
-    vec3(float x = 0.0f, float y = 0.0f, float z = 0.0f) : x(x), y(y), z(z) {}
-
+    vec3(float x, float y, float z) : x(x), y(y), z(z) {}
+    vec3(float value) : x(value), y(value), z(value) {}
+    vec3() {}
+    
     vec3& operator=(const vec3& r);
     vec3& operator+=(const vec3& r);
     vec3& operator-=(const vec3& r);
@@ -34,7 +38,7 @@ struct vec3
     float length() const;
     float lengthSq() const;
 
-    float x, y, z; 
+    float x = 0.0f, y = 0.0f, z = 0.0f; 
 };
 
 vec2 operator+(const vec2& l, const vec2& r);
