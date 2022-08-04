@@ -18,6 +18,7 @@ public:
                       GLboolean normalize, GLsizei stride, const void* offset);
     void updateBuffer(GLint bufferIndex, GLsizei size, void* data, GLenum usage);
     void update(const float alpha);
+    void updateObjectRenderInfo(GLint i, Object* obj);
     void render() const;
 
 private:
@@ -28,7 +29,7 @@ private:
     Scene(const Scene&) = delete;
     Scene& operator=(const Scene&) = delete; 
 
-    static float* renderInfo;
+    static float* renderBuffer;
 
     std::vector<Ant*> ants;
     std::vector<Source*> sources;

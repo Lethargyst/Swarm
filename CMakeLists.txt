@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDART 17)
 
 add_executable( ${PROJECT_NAME} 
     src/main.cpp
+    src/Math/Constants.h
     src/Math/Matrices.h
     src/Math/Matrices.cpp
     src/Math/Vectors.h

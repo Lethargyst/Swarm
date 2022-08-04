@@ -4,7 +4,7 @@
 #include "objects.h"
 
 
-class Source : Object
+class Source : public Object
 {
 public:
     Source(vec2 pos, float speed, vec3 color) : Object(pos, speed, color) {}
@@ -22,7 +22,7 @@ private:
 };
 
 
-class Ant : Object
+class Ant : public Object
 { 
 public:
     Ant(vec2 pos, float shoutRange, float speed, vec3 color) : Object(pos, speed, color) {}
@@ -32,6 +32,7 @@ public:
     virtual void update(const float alpha) override; 
     bool isCollidingSource(std::vector<Source*> sources) const;
     void shout() const;
+    void setMovementSpread(const float radian); 
 
 private:
     Ant(const Ant& other) = delete;
@@ -40,8 +41,9 @@ private:
     static int amount_;
 
     Source* source_;
-    bool movingRandomly = true;
-    bool movingToTarget = false;
+    float movementSpead_ = DEG2RAD(5);
+    bool movingRandomly_ = true;
+    bool movingToTarget_ = false;
 };
 
 #endif

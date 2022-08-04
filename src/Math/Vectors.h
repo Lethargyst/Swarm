@@ -2,6 +2,7 @@
 #define VECTORS_H
 
 #include <cmath> 
+#include "constants.h"
 
 struct vec2 
 {
