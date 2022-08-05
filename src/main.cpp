@@ -22,18 +22,7 @@ int main(int argc, char* argv[])
     Renderer::loadSource("../src/Render/Shaders/GeometryShader.geom", geometryShaderSource);
     Renderer::ShaderProgram shader(vertexShaderSource, fragmentShaderSource, geometryShaderSource);
 
-
-    float vertexes[] = {
-         0.5f, -0.5f,
-        -0.5f, -0.5f,
-         0.0f,  0.5f,
-    };
-
     Scene& scene = Scene::initialize(&window, &shader);
-
-    scene.initBuffers(1);
-    scene.setBufferData(0, sizeof(vertexes), vertexes, GL_DYNAMIC_DRAW);
-    scene.configBuffer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
 
     float alpha = 0.0f;
     while (!glfwWindowShouldClose(window.glWindow_))

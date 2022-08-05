@@ -6,6 +6,7 @@
 #include "../Objects/Swarm.h"
 #include "../Render/ShaderProgram.h"
 #include "../Render/Window.h"
+#include "../precompiled.h"
 
 class Scene
 {
@@ -21,6 +22,7 @@ public:
     void updateObjectRenderInfo(GLint i, Object* obj);
     void render() const;
 
+    GLint objectsAmount_;
 private:
     Scene() {}
     Scene(Window* window, Renderer::ShaderProgram* shader) : window_(window), shader_(shader) {} 

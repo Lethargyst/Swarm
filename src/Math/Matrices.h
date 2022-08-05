@@ -37,8 +37,8 @@ struct mat3
                     0.0f, 0.0f, 0.0f};
 };
 
-vec2 operator*(vec2& vec, const mat2& mat);
-vec3 operator*(vec3& vec, const mat3& mat);
+vec2 operator*(vec2& vec, mat2& mat);
+vec3 operator*(vec3& vec, mat3& mat);
 
 
 #endif

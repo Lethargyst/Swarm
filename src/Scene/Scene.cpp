@@ -1,10 +1,20 @@
 #include "Scene.h"
 
-float* Scene::renderBuffer = new float[500000];
+float* Scene::renderBuffer = new float[RENDER_BUFFER_SIZE];
 
 Scene& Scene::initialize(Window* window, Renderer::ShaderProgram* shader)
 {
     static Scene sceneObj(window, shader);
+    sceneObj.initBuffers(1);
+    sceneObj.setBufferData(0, sizeof(renderBuffer), renderBuffer, GL_DYNAMIC_DRAW);
+
+    // objects are represented in render buffer as follows:
+    // [..., pos.x, pos.y, size, color.x, color.y, color.z, ...] 
+    
+    sceneObj.configBuffer(0, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr); // object coordinates
+    sceneObj.configBuffer(1, 1, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(2 * sizeof(float))); // object size
+    sceneObj.configBuffer(2, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))); // object color
+
     return sceneObj;
 }
 
@@ -60,6 +70,8 @@ void Scene::update(const float alpha)
         sources[i]->update(alpha);
         updateObjectRenderInfo(i * 6, ants[i]);
     }
+
+    objectsAmount_ = Ant::getAmount() + Source::getAmount();
 }
 
 void Scene::updateObjectRenderInfo(GLint i, Object* obj)
@@ -81,19 +93,17 @@ void Scene::render() const
 
     vec2 resolution = window_->getResolution();
     glUniform2f(glGetUniformLocation(shader_->getID(), "resolution"), resolution.x, resolution.y);
-    //---------------------------------------
 
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO_[0]);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, 6 * sizeof(float), renderBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, objectsAmount_ * 6 * sizeof(float), renderBuffer);
 
     for (GLsizei i = 0; i < buffersAmount_; ++i) {
         glBindVertexArray(VAO_[i]);
-        glDrawArrays(GL_POINTS, 0, 3);
+        glDrawArrays(GL_POINTS, 0, objectsAmount_);
     }
 
-    //---------------------------------------
     glfwSwapBuffers(window_->glWindow_);
     glfwPollEvents();
 }
