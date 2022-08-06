@@ -3,10 +3,10 @@
 
 #include <glad/glad.h>
 #include <vector>
+#include "../precompiled.h"
 #include "../Objects/Swarm.h"
 #include "../Render/ShaderProgram.h"
 #include "../Render/Window.h"
-#include "../precompiled.h"
 
 class Scene
 {
@@ -18,8 +18,17 @@ public:
     void configBuffer(GLuint index, GLsizei size, GLenum type, 
                       GLboolean normalize, GLsizei stride, const void* offset);
     void updateBuffer(GLint bufferIndex, GLsizei size, void* data, GLenum usage);
+
+    void genAnts(GLint num);
+    void genSources(GLint num);
+
     void update(const float alpha);
+
+    // Updates information about the object in the renderBuffer
+    // i - index of the beggining of the object in the renderBuffer,
+    // obj - pointer to the object
     void updateObjectRenderInfo(GLint i, Object* obj);
+    
     void render() const;
 
     GLint objectsAmount_;

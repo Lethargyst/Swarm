@@ -57,15 +57,46 @@ void Scene::updateBuffer(GLint bufferIndex, GLsizei size, void* data, GLenum usa
     renderBuffer = (float*)data;
 }
 
+void Scene::genAnts(GLint num)
+{
+    vec2 resolution = window_->getResolution();
+    for (std::size_t i = 0; i < num; ++i) {
+        vec2 pos = vec2(rand() % (int)resolution.x, rand() % (int)resolution.y);
+        ants.push_back(new Ant(pos, 25.0f, 10.0f, vec3(1.0f, 1.0f, 1.0f)));
+    }
+}
+
+void Scene::genSources(GLint num)
+{
+    vec2 resolution = window_->getResolution();
+    for (std::size_t i = 0; i < num; ++i) {
+        vec2 pos = vec2(rand() % (int)resolution.x, rand() % (int)resolution.y);
+        vec3 color = vec3((int)pos.x % 255, (int)pos.y % 255, rand() % 255);
+        sources.push_back(new Source(pos, 5.0f, vec3()));
+    }
+}
+
+void Scene::updateObjectRenderInfo(GLint i, Object* obj)
+{
+    renderBuffer[i] = obj->pos_.x;          
+    renderBuffer[i + 1] = obj->pos_.y;      
+    renderBuffer[i + 2] = obj->size_;      
+    renderBuffer[i + 3] = obj->color_.x;   
+    renderBuffer[i + 4] = obj->color_.y;   
+    renderBuffer[i + 5] = obj->color_.z;   
+}
+
 void Scene::update(const float alpha)
 {
     window_->processInput();
 
+    // Updating ants objects
     for (std::size_t i = 0; i < Ant::getAmount(); ++i) {
         ants[i]->update(alpha);
         updateObjectRenderInfo(i * 6, ants[i]);
     }
-        
+
+    // Updating sources objects    
     for (std::size_t i = 0; i < Source::getAmount(); ++i) {
         sources[i]->update(alpha);
         updateObjectRenderInfo(i * 6, ants[i]);
@@ -74,31 +105,25 @@ void Scene::update(const float alpha)
     objectsAmount_ = Ant::getAmount() + Source::getAmount();
 }
 
-void Scene::updateObjectRenderInfo(GLint i, Object* obj)
-{
-    renderBuffer[i] = obj->pos_.x;
-    renderBuffer[i + 1] = obj->pos_.y;
-    renderBuffer[i + 2] = obj->size_;
-    renderBuffer[i + 3] = obj->color_.x;
-    renderBuffer[i + 4] = obj->color_.y;
-    renderBuffer[i + 5] = obj->color_.z;
-}
-
 void Scene::render() const
 {
     shader_->use();
 
+    // Clearing the monitor
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    // Sending resolution value to the graphics shader
     vec2 resolution = window_->getResolution();
     glUniform2f(glGetUniformLocation(shader_->getID(), "resolution"), resolution.x, resolution.y);
 
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
+    // Sending renering info from renderBuffer to the graphics shader
     glBindBuffer(GL_ARRAY_BUFFER, VBO_[0]);
     glBufferSubData(GL_ARRAY_BUFFER, 0, objectsAmount_ * 6 * sizeof(float), renderBuffer);
 
+    // Drawing all buffers
     for (GLsizei i = 0; i < buffersAmount_; ++i) {
         glBindVertexArray(VAO_[i]);
         glDrawArrays(GL_POINTS, 0, objectsAmount_);

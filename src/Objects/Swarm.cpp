@@ -1,23 +1,35 @@
 #include "Swarm.h"
 
 
-int Source::amount_ = 0;
-int Ant::amount_ = 0;
+int Source::amount = 0;
+int Ant::amount = 0;
 
-int Source::getAmount() { return amount_; }
-int Ant::getAmount() { return amount_; }
+int Source::getAmount() { return amount; }
+int Ant::getAmount() { return amount; }
 
-void Ant::setMovementSpread(const float radian) { movementSpead_ = radian; }
+Source::Source(vec2 pos, float speed, vec3 color)
+    : Object(pos, speed, color) 
+{
+    amount++;
+}
+
+Source::~Source() {}
+
+void Source::update(const float alpha)
+{
+    Object::update(alpha);
+}
+
+Ant::Ant(vec2 pos, float shoutRange, float speed, vec3 color) 
+    : shoutRange_(shoutRange), Object(pos, speed, color) 
+{
+    amount++;
+}
+
+Ant::~Ant() {}
 
 void Ant::update(const float alpha)
 {
-    if (movingRandomly_) {
-        this->changeDirection((rand() % 628) / 100.0f);
-    } else {
-        directionMat_.setRotation(direction_ + movementSpead_);
-    }
-
-    velocity_ = speedVec_ * directionMat_;
-    pos_ += velocity_;
+    Object::update(alpha);
 }
 

@@ -23,8 +23,10 @@ int main(int argc, char* argv[])
     Renderer::ShaderProgram shader(vertexShaderSource, fragmentShaderSource, geometryShaderSource);
 
     Scene& scene = Scene::initialize(&window, &shader);
+    scene.genAnts(1000);
+    scene.genSources(2);
 
-    float alpha = 0.0f;
+    float alpha = 0.0f; 
     while (!glfwWindowShouldClose(window.glWindow_))
     {
         auto start_time = std::chrono::steady_clock::now();

@@ -7,19 +7,31 @@ set(CMAKE_CXX_STANDART 17)
 
 add_executable( ${PROJECT_NAME} 
     src/main.cpp
-    src/Math/Constants.h
+
+    src/Math/Algebra.h
+    src/Math/Algebra.cpp
+    
     src/Math/Matrices.h
     src/Math/Matrices.cpp
+    
     src/Math/Vectors.h
     src/Math/Vectors.cpp
+    
     src/Objects/Objects.h
     src/Objects/Objects.cpp
+    
     src/Objects/Swarm.h
     src/Objects/Swarm.cpp
+    
     src/Render/ShaderProgram.h
     src/Render/ShaderProgram.cpp
+    
     src/Render/Window.h
     src/Render/Window.cpp    
+    
+    src/Scene/QuadTree.h
+    src/Scene/QuadTree.cpp
+
     src/Scene/Scene.h
     src/Scene/Scene.cpp
 )

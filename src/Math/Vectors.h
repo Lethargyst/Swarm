@@ -2,7 +2,7 @@
 #define VECTORS_H
 
 #include <cmath> 
-#include "constants.h"
+#include "Algebra.h"
 
 struct vec2 
 {

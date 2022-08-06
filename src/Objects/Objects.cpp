@@ -18,3 +18,18 @@ void Object::changeDirection(const float dir)
     directionMat_ = mat2(cosf(dir), 0.0f, 
                         0.0f, sinf(dir));
 }
+
+void Object::setMovementSpread(const float radian) { movementSpread_ = radian; }
+
+
+void Object::update(const float alpha)
+{
+      if (movingRandomly_) {
+        this->changeDirection((rand() % 628) / 100.0f);
+    } else {
+        directionMat_.setRotation(direction_ + movementSpread_);
+    }
+
+    velocity_ = speedVec_ * directionMat_;
+    pos_ += velocity_;
+}
