@@ -11,7 +11,7 @@ enum ObjectType {
 class Source : public Object
 {
 public:
-    Source(vec2 pos, float speed, vec3 color);
+    Source(vec2 pos, float speed, float size, vec3 color);
     ~Source();
 
     static int getAmount();
@@ -33,7 +33,7 @@ private:
 class Ant : public Object
 { 
 public:
-    Ant(vec2 pos, float shoutRange, float speed, vec3 color);
+    Ant(vec2 pos, float shoutRange, float speed, float size, vec3 color);
     ~Ant();
 
     static int getAmount();

@@ -24,16 +24,17 @@ namespace Renderer
         char infoLog[512];
         glGetProgramiv(ID_, GL_LINK_STATUS, &success);
         if (!success) {
-            glGetShaderInfoLog(ID_, 512, NULL, infoLog);
+            glGetProgramInfoLog(ID_, 512, NULL, infoLog);
             std::cerr << "Shader Program: LINKING ERROR\n" 
                         << "----------------------------------\n" 
-                        << infoLog 
+                        << infoLog << "\n"
                         << "----------------------------------\n";
             return;
         }
 
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
+        glDeleteShader(geometryShader);
         isCompiled_ = true;
     }
 
@@ -52,7 +53,7 @@ namespace Renderer
             glGetShaderInfoLog(shaderID, 512, NULL, infoLog);
             std::cerr << "Shader Program: COMPILATION ERROR\n" 
                         << "----------------------------------\n" 
-                        << infoLog 
+                        << infoLog  << "\n"
                         << "----------------------------------\n";
             return false;
         }

@@ -25,7 +25,7 @@ public:
     void update(const float alpha);
 
     // Updates information about the object in the renderBuffer
-    // i - index of the beggining of the object in the renderBuffer,
+    // i - index of the object in the renderBuffer,
     // obj - pointer to the object
     void updateObjectRenderInfo(GLint i, Object* obj);
     

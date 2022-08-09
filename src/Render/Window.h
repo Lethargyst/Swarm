@@ -12,7 +12,7 @@ class Window
 {
 public:
     Window(int width, int height, const char* label);
-    ~Window() { if (glWindow_) delete glWindow_; }
+    ~Window() {}
 
     void processInput();
     vec2 getResolution() const { return vec2(width_, height_); }

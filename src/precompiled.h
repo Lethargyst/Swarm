@@ -6,6 +6,8 @@
 
 const unsigned int RENDER_BUFFER_SIZE = 500000;
 const unsigned int MOVEMENT_SPREAD =  5;
+const float SOURCE_SIZE = 30.0f;
+const float ANT_SIZE = 4.0f;
 
 #endif
 

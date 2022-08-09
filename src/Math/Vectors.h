@@ -25,7 +25,7 @@ struct vec2
 
 struct vec3 
 { 
-    vec3(const vec3& other) : x(other.x), y(other.y) {}
+    vec3(const vec3& other) : x(other.x), y(other.y), z(other.z) {}
     vec3(float x, float y, float z) : x(x), y(y), z(z) {}
     vec3(float value) : x(value), y(value), z(value) {}
     vec3() {}

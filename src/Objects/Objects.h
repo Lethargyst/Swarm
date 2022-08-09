@@ -7,7 +7,7 @@
 class Object
 {
 public:
-    Object(vec2 pos, float speed, vec3 color);
+    Object(vec2 pos, float speed, float size, vec3 color);
     virtual ~Object() {};
 
     virtual void update(const float alpha);

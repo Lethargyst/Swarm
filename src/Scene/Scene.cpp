@@ -6,7 +6,7 @@ Scene& Scene::initialize(Window* window, Renderer::ShaderProgram* shader)
 {
     static Scene sceneObj(window, shader);
     sceneObj.initBuffers(1);
-    sceneObj.setBufferData(0, sizeof(renderBuffer), renderBuffer, GL_DYNAMIC_DRAW);
+    sceneObj.setBufferData(0, RENDER_BUFFER_SIZE, renderBuffer, GL_DYNAMIC_DRAW);
 
     // objects are represented in render buffer as follows:
     // [..., pos.x, pos.y, size, color.x, color.y, color.z, ...] 
@@ -22,7 +22,7 @@ Scene::~Scene()
 { 
     if (renderBuffer) delete[] renderBuffer; 
     if (VAO_) delete[] VAO_;
-    if (VBO_) delete VBO_;
+    if (VBO_) delete[] VBO_;
     if (window_) delete window_;
 }
 
@@ -62,7 +62,8 @@ void Scene::genAnts(GLint num)
     vec2 resolution = window_->getResolution();
     for (std::size_t i = 0; i < num; ++i) {
         vec2 pos = vec2(rand() % (int)resolution.x, rand() % (int)resolution.y);
-        ants.push_back(new Ant(pos, 25.0f, 10.0f, vec3(1.0f, 1.0f, 1.0f)));
+        vec3 color = vec3(255.0f, 255.0f, 255.0f);
+        ants.push_back(new Ant(pos, 25.0f, 10.0f, ANT_SIZE, color));
     }
 }
 
@@ -71,19 +72,19 @@ void Scene::genSources(GLint num)
     vec2 resolution = window_->getResolution();
     for (std::size_t i = 0; i < num; ++i) {
         vec2 pos = vec2(rand() % (int)resolution.x, rand() % (int)resolution.y);
-        vec3 color = vec3((int)pos.x % 255, (int)pos.y % 255, rand() % 255);
-        sources.push_back(new Source(pos, 5.0f, vec3()));
+        vec3 color = vec3((int)pos.x % 255, (int)pos.y % 255, (int)rand() % 255);
+        sources.push_back(new Source(pos, 5.0f, SOURCE_SIZE, color));
     }
 }
 
 void Scene::updateObjectRenderInfo(GLint i, Object* obj)
 {
-    renderBuffer[i] = obj->pos_.x;          
-    renderBuffer[i + 1] = obj->pos_.y;      
-    renderBuffer[i + 2] = obj->size_;      
-    renderBuffer[i + 3] = obj->color_.x;   
-    renderBuffer[i + 4] = obj->color_.y;   
-    renderBuffer[i + 5] = obj->color_.z;   
+    renderBuffer[i * 6] = obj->pos_.x;          
+    renderBuffer[i * 6 + 1] = obj->pos_.y;      
+    renderBuffer[i * 6 + 2] = obj->size_;      
+    renderBuffer[i * 6 + 3] = obj->color_.x;   
+    renderBuffer[i * 6 + 4] = obj->color_.y;   
+    renderBuffer[i * 6 + 5] = obj->color_.z;   
 }
 
 void Scene::update(const float alpha)
@@ -93,13 +94,13 @@ void Scene::update(const float alpha)
     // Updating ants objects
     for (std::size_t i = 0; i < Ant::getAmount(); ++i) {
         ants[i]->update(alpha);
-        updateObjectRenderInfo(i * 6, ants[i]);
+        updateObjectRenderInfo(i, ants[i]);
     }
 
     // Updating sources objects    
     for (std::size_t i = 0; i < Source::getAmount(); ++i) {
         sources[i]->update(alpha);
-        updateObjectRenderInfo(i * 6, ants[i]);
+        updateObjectRenderInfo(i + Ant::getAmount(), sources[i]);
     }
 
     objectsAmount_ = Ant::getAmount() + Source::getAmount();
@@ -121,13 +122,11 @@ void Scene::render() const
 
     // Sending renering info from renderBuffer to the graphics shader
     glBindBuffer(GL_ARRAY_BUFFER, VBO_[0]);
+
     glBufferSubData(GL_ARRAY_BUFFER, 0, objectsAmount_ * 6 * sizeof(float), renderBuffer);
 
-    // Drawing all buffers
-    for (GLsizei i = 0; i < buffersAmount_; ++i) {
-        glBindVertexArray(VAO_[i]);
-        glDrawArrays(GL_POINTS, 0, objectsAmount_);
-    }
+    glBindVertexArray(VAO_[0]);
+    glDrawArrays(GL_POINTS, 0, objectsAmount_);
 
     glfwSwapBuffers(window_->glWindow_);
     glfwPollEvents();

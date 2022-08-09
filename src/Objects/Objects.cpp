@@ -1,10 +1,11 @@
 #include "Objects.h"
 
 
-Object::Object(vec2 pos, float speed, vec3 color)
+Object::Object(vec2 pos, float speed, float size, vec3 color)
 {
     pos_ = pos;
     speed_ = speed;
+    size_ = size;
     speedVec_ = vec2(speed);
     color_ = color;
     direction_ = (rand() % 628) / 100.0f;
@@ -27,9 +28,9 @@ void Object::update(const float alpha)
       if (movingRandomly_) {
         this->changeDirection((rand() % 628) / 100.0f);
     } else {
-        directionMat_.setRotation(direction_ + movementSpread_);
+        directionMat_.setRotation((direction_ + movementSpread_) * alpha);
     }
 
-    velocity_ = speedVec_ * directionMat_;
+    velocity_ = speedVec_ * directionMat_ * alpha;
     pos_ += velocity_;
 }

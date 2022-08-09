@@ -1,6 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <chrono>
+#include "windows.h"
 #include "Math/Vectors.h"
 #include "Scene/Scene.h"
 
@@ -26,7 +27,7 @@ int main(int argc, char* argv[])
     scene.genAnts(1000);
     scene.genSources(2);
 
-    float alpha = 0.0f; 
+    float alpha = 1.0f; 
     while (!glfwWindowShouldClose(window.glWindow_))
     {
         auto start_time = std::chrono::steady_clock::now();
@@ -37,6 +38,7 @@ int main(int argc, char* argv[])
         alpha += 0.001f;
         auto end_time = std::chrono::steady_clock::now();
         auto elapsed_ns = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+    
         // printf("FPS: %f\n", 1.0f / (elapsed_ns.count() / 1e6));
     }
 

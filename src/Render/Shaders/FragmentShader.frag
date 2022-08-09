@@ -1,14 +1,12 @@
-#version 460 
+#version 460
 
 precision mediump float;
 
-in vec2 pos;
+in vec3 gColor;
 
 uniform vec2 resolution;
 
-
-void main(){
-
-    vec3 color = vec3(gl_FragCoord.x / resolution.x, gl_FragCoord.y / resolution.y, 1.0);
-	gl_FragColor = vec4(color, 1.0);
+void main() { 
+	gl_FragColor = vec4(gColor.x / 255, gColor.y / 255, gColor.z / 255, 1.0);
+	// gl_FragColor = vec4(1.0);
 }
