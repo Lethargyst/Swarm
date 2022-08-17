@@ -11,7 +11,7 @@ enum ObjectType {
 class Source : public Object
 {
 public:
-    Source(vec2 pos, float speed, float size, vec3 color);
+    Source(const vec2& pos, float speed, float size, const vec3& color);
     ~Source();
 
     static int getAmount();
@@ -33,13 +33,13 @@ private:
 class Ant : public Object
 { 
 public:
-    Ant(vec2 pos, float shoutRange, float speed, float size, vec3 color);
+    Ant(const vec2& pos, float shoutRange, float speed,
+        float size, const vec3& color);
     ~Ant();
 
     static int getAmount();
 
     virtual void update(const float alpha) override; 
-    // bool isCollidingSource(std::vector<Source*> sources) const;
     // void shout() const; 
 
 private:

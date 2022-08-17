@@ -1,7 +1,7 @@
 #include "Objects.h"
 
 
-Object::Object(vec2 pos, float speed, float size, vec3 color)
+Object::Object(const vec2& pos, float speed, float size, const vec3& color)
 {
     pos_ = pos;
     speed_ = speed;

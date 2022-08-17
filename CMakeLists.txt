@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDART 17)
 
 add_executable( ${PROJECT_NAME} 
     src/main.cpp
+    src/precompiled.h
 
     src/Math/Algebra.h
     src/Math/Algebra.cpp
@@ -16,7 +17,13 @@ add_executable( ${PROJECT_NAME}
     
     src/Math/Vectors.h
     src/Math/Vectors.cpp
+
+    src/Objects/CollisionManager.h
+    src/Objects/CollisionManager.cpp
     
+    src/Objects/Geometry2D.h
+    src/Objects/Geometry2D.cpp
+
     src/Objects/Objects.h
     src/Objects/Objects.cpp
     
@@ -28,7 +35,7 @@ add_executable( ${PROJECT_NAME}
     
     src/Render/Window.h
     src/Render/Window.cpp    
-    
+
     src/Scene/QuadTree.h
     src/Scene/QuadTree.cpp
 

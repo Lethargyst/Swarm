@@ -63,7 +63,7 @@ void Scene::genAnts(GLint num)
     for (std::size_t i = 0; i < num; ++i) {
         vec2 pos = vec2(rand() % (int)resolution.x, rand() % (int)resolution.y);
         vec3 color = vec3(255.0f, 255.0f, 255.0f);
-        ants.push_back(new Ant(pos, 25.0f, 10.0f, ANT_SIZE, color));
+        ants.push_back(new Ant(pos, 25.0f, 2.0f, ANT_SIZE, color));
     }
 }
 
@@ -73,7 +73,7 @@ void Scene::genSources(GLint num)
     for (std::size_t i = 0; i < num; ++i) {
         vec2 pos = vec2(rand() % (int)resolution.x, rand() % (int)resolution.y);
         vec3 color = vec3((int)pos.x % 255, (int)pos.y % 255, (int)rand() % 255);
-        sources.push_back(new Source(pos, 5.0f, SOURCE_SIZE, color));
+        sources.push_back(new Source(pos, 2.0f, SOURCE_SIZE, color));
     }
 }
 
