@@ -40,7 +40,6 @@ int QuadTreeNode::objectsAmount()
     for (std::size_t i = 0, size = contents_.size(); i < size; ++i) {
         contents_[i]->flag_ = true;
     }
-
     std::queue<QuadTreeNode*> process;
     process.push(this);
 
@@ -52,7 +51,7 @@ int QuadTreeNode::objectsAmount()
             }
         } else {
             for (std::size_t i = 0, size = processing->contents_.size(); i < size; ++i) {
-                objectsCnt++;
+                if (!processing->contents_[i]->flag_) objectsCnt++;
                 processing->contents_[i]->flag_ = true;
             }
         }
@@ -74,7 +73,7 @@ bool QuadTreeNode::remove(QuadTreeData& data)
             }
         }
 
-        if (removeIndex != -1) contents_.erase(contents_.begin() + 1);
+        if (removeIndex != -1) contents_.erase(contents_.begin() + removeIndex);
         return true;
     } else {
         bool isRemoved;
@@ -90,9 +89,9 @@ bool QuadTreeNode::remove(QuadTreeData& data)
 
 void QuadTreeNode::insert(QuadTreeData& data)
 {
-    if (CollisionManager::RectRect(data.bounds_, bounds_)) return;
+    if (!CollisionManager::RectRect(data.bounds_, bounds_)) return;
 
-    if (isLeaf() && contents_.size() + 1 > maxObjectsPerNode) {
+    if (isLeaf() && contents_.size() == maxObjectsPerNode) {
         split();
     }
 
@@ -115,7 +114,7 @@ void QuadTreeNode::reset()
 {
     if (isLeaf()) {
         for (std::size_t i = 0, size = contents_.size(); i < size; ++i) {
-            contents_[i]->flag_ = true;
+            contents_[i]->flag_ = false;
         }
     } else {
         for (std::size_t i = 0, size = children_.size(); i < size; ++i) {
@@ -126,29 +125,31 @@ void QuadTreeNode::reset()
  
 void QuadTreeNode::shake()
 {
-    int objAmount = objectsAmount();
     if (!isLeaf()) {
+        int objAmount = objectsAmount();
+
         if (objAmount == 0) {
             children_.clear();
-        }
-    } else if (objAmount < maxObjectsPerNode) {
-        std::queue<QuadTreeNode*> process;
-        process.push(this);
+        } else if (objAmount < maxObjectsPerNode) {
+            // Collapse all children nodes into current node
+            std::queue<QuadTreeNode*> process;
+            process.push(this);
 
-        while (process.size() > 0) {
-            QuadTreeNode* processing = process.back();
-            if (!processing->isLeaf()) {
-                for (std::size_t i = 0, size = children_.size(); i < size; ++i) {
-                    process.push(&processing->children_[i]);
+            while (process.size() > 0) {
+                QuadTreeNode* processing = process.back();
+                if (!processing->isLeaf()) {
+                    for (std::size_t i = 0, size = children_.size(); i < size; ++i) {
+                        process.push(&processing->children_[i]);
+                    }
+                } else {
+                    contents_.insert(contents_.end(), 
+                                    processing->contents_.begin(),
+                                    processing->contents_.end());
                 }
-            } else {
-                contents_.insert(contents_.end(), 
-                                 processing->contents_.begin(),
-                                 processing->contents_.end());
+                process.pop();
             }
-            process.pop();
-        }
-        children_.clear();
+            children_.clear();
+        } 
     } 
 }
 
