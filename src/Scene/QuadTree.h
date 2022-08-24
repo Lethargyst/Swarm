@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <queue>
+#include <stdio.h>
 #include "../Objects/CollisionManager.h"
 #include "../Objects/Objects.h"
 #include "../Objects/Geometry2d.h"

@@ -23,7 +23,9 @@ int main(int argc, char* argv[])
     Renderer::ShaderProgram shader(vertexShaderSource, fragmentShaderSource, geometryShaderSource);
 
     Scene& scene = Scene::initialize(&window, &shader);
-    scene.genAnts(1000);
+    int antsNum;
+    sscanf(argv[1], "%i", &antsNum);
+    scene.genAnts(antsNum);
     scene.genSources(2);
 
     float lastTime = 0.0f;

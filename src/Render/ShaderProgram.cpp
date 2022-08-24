@@ -36,6 +36,8 @@ namespace Renderer
         glDeleteShader(fragmentShader);
         glDeleteShader(geometryShader);
         isCompiled_ = true;
+
+        // printf("Shaders initialized succesfully\n");
     }
 
     bool ShaderProgram::compileShader(const std::string& source, const GLenum shaderType, GLuint& shaderID)

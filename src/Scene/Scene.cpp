@@ -1,29 +1,34 @@
 #include "Scene.h"
 
-float* Scene::renderBuffer = new float[RENDER_BUFFER_SIZE];
+float* Scene::objectsRenderBuffer = new float[RENDER_BUFFER_SIZE];
+
+Scene::~Scene() 
+{ 
+    if (objectsRenderBuffer) delete[] objectsRenderBuffer; 
+    if (VAO_) delete[] VAO_;
+    if (VBO_) delete[] VBO_;
+    if (window_) delete window_;
+    if (quadTree_) delete quadTree_;
+}
 
 Scene& Scene::initialize(Window* window, Renderer::ShaderProgram* shader)
 {
     static Scene sceneObj(window, shader);
     sceneObj.initBuffers(1);
-    sceneObj.setBufferData(0, RENDER_BUFFER_SIZE, renderBuffer, GL_DYNAMIC_DRAW);
 
+    sceneObj.setBufferData(0, RENDER_BUFFER_SIZE, objectsRenderBuffer, GL_DYNAMIC_DRAW);
     // objects are represented in render buffer as follows:
     // [..., pos.x, pos.y, size, color.x, color.y, color.z, ...] 
-    
     sceneObj.configBuffer(0, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr); // object coordinates
     sceneObj.configBuffer(1, 1, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(2 * sizeof(float))); // object size
     sceneObj.configBuffer(2, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))); // object color
 
-    return sceneObj;
-}
+    // sceneObj.setBufferData(1, QUAD_TREE_BUFFER_SIZE, quadTreeRenderBuffer, GL_DYNAMIC_DRAW);
 
-Scene::~Scene() 
-{ 
-    if (renderBuffer) delete[] renderBuffer; 
-    if (VAO_) delete[] VAO_;
-    if (VBO_) delete[] VBO_;
-    if (window_) delete window_;
+    vec2 resolution = window->getResolution();
+    sceneObj.quadTree_ = new QuadTree(Rectangle2d(0.0f, 0.0f, resolution.x, resolution.y));
+
+    return sceneObj;
 }
 
 void Scene::initBuffers(GLsizei num)
@@ -40,7 +45,7 @@ void Scene::setBufferData(GLint bufferIndex, GLint size, void* data, GLenum usag
     glBindVertexArray(VAO_[bufferIndex]);
     glBindBuffer(GL_ARRAY_BUFFER, VBO_[bufferIndex]);
     glBufferData(GL_ARRAY_BUFFER, size, data, usage);
-    renderBuffer = (float*)data;
+    objectsRenderBuffer = (float*)data;
 }
 
 void Scene::configBuffer(GLuint index, GLsizei size, GLenum type, 
@@ -54,7 +59,7 @@ void Scene::updateBuffer(GLint bufferIndex, GLsizei size, void* data, GLenum usa
 {
     glBindBuffer(GL_ARRAY_BUFFER, VBO_[bufferIndex]);
     glBufferData(GL_ARRAY_BUFFER, size, data, usage); 
-    renderBuffer = (float*)data;
+    objectsRenderBuffer = (float*)data;
 }
 
 void Scene::genAnts(GLint num)
@@ -63,7 +68,14 @@ void Scene::genAnts(GLint num)
     for (std::size_t i = 0; i < num; ++i) {
         vec2 pos = vec2(rand() % (int)resolution.x, rand() % (int)resolution.y);
         vec3 color = vec3(255.0f, 255.0f, 255.0f);
-        ants.push_back(new Ant(pos, 25.0f, 2.0f, ANT_SIZE, color));
+        Ant* ant = new Ant(pos, 25.0f, 2.0f, ANT_SIZE, color);
+
+        Rectangle2d bounds = Rectangle2d(ant->pos_ - ant->size_, ant->size_);
+        QuadTreeData* data = new QuadTreeData(ant, bounds);        
+
+        quadTree_->insert(*data);
+        quadTreeDataSet_.push_back(data);
+        ants.push_back(ant);
     }
 }
 
@@ -79,17 +91,17 @@ void Scene::genSources(GLint num)
 
 void Scene::updateObjectRenderInfo(GLint i, Object* obj)
 {
-    renderBuffer[i * 6] = obj->pos_.x;          
-    renderBuffer[i * 6 + 1] = obj->pos_.y;      
-    renderBuffer[i * 6 + 2] = obj->size_;      
-    renderBuffer[i * 6 + 3] = obj->color_.x;   
-    renderBuffer[i * 6 + 4] = obj->color_.y;   
-    renderBuffer[i * 6 + 5] = obj->color_.z;   
+    objectsRenderBuffer[i * 6] = obj->pos_.x;          
+    objectsRenderBuffer[i * 6 + 1] = obj->pos_.y;      
+    objectsRenderBuffer[i * 6 + 2] = obj->size_;      
+    objectsRenderBuffer[i * 6 + 3] = obj->color_.x;   
+    objectsRenderBuffer[i * 6 + 4] = obj->color_.y;   
+    objectsRenderBuffer[i * 6 + 5] = obj->color_.z;   
 }
 
 void Scene::update(const float alpha)
 {
-    window_->processInput();
+    processInput();
 
     // Updating ants objects
     for (std::size_t i = 0; i < Ant::getAmount(); ++i) {
@@ -101,6 +113,10 @@ void Scene::update(const float alpha)
     for (std::size_t i = 0; i < Source::getAmount(); ++i) {
         sources[i]->update(alpha);
         updateObjectRenderInfo(i + Ant::getAmount(), sources[i]);
+    }
+
+    for (std::size_t i = 0; i < quadTreeDataSet_.size(); ++i) {
+        quadTree_->update(*quadTreeDataSet_[i]);
     }
 
     objectsAmount_ = Ant::getAmount() + Source::getAmount();
@@ -120,14 +136,23 @@ void Scene::render() const
 
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
-    // Sending renering info from renderBuffer to the graphics shader
+    // Sending renering info from objectsRenderBuffer to the graphics shader
     glBindBuffer(GL_ARRAY_BUFFER, VBO_[0]);
 
-    glBufferSubData(GL_ARRAY_BUFFER, 0, objectsAmount_ * 6 * sizeof(float), renderBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, objectsAmount_ * 6 * sizeof(float), objectsRenderBuffer);
 
     glBindVertexArray(VAO_[0]);
     glDrawArrays(GL_POINTS, 0, objectsAmount_);
 
     glfwSwapBuffers(window_->glWindow_);
     glfwPollEvents();
+}
+
+void Scene::processInput()
+{
+    if (glfwGetKey(window_->glWindow_, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window_->glWindow_, true); 
+
+    if (glfwGetKey(window_->glWindow_, GLFW_KEY_SPACE) == GLFW_PRESS)
+        renderQuadTree = !renderQuadTree;
 }

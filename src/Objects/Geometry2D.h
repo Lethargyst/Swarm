@@ -21,6 +21,9 @@ struct Rectangle2d
 {
     Rectangle2d(const Point2d& origin, const vec2& size) : origin_(origin), size_(size) {} 
     Rectangle2d(const Rectangle2d& other) : origin_(other.origin_), size_(other.size_) {}
+    Rectangle2d(float x0, float y0, 
+                float x1, float y1) : origin_(Point2d(x0, y0)), size_(vec2(x1, y1)) {}
+    Rectangle2d() {}
 
     vec2 getMin() const;
     vec2 getMax() const;

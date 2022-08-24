@@ -17,12 +17,6 @@ Window::Window(int width, int height, const char* label)
     glfwSetFramebufferSizeCallback(glWindow_, frameBufferSizeCallback);
 }
 
-void Window::processInput()
-{
-    if (glfwGetKey(glWindow_, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(glWindow_, true);    
-}
-
 void Window::frameBufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);

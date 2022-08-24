@@ -14,7 +14,6 @@ public:
     Window(int width, int height, const char* label);
     ~Window() {}
 
-    void processInput();
     vec2 getResolution() const { return vec2(width_, height_); }
 
     GLFWwindow *glWindow_;

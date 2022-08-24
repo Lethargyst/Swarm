@@ -1,8 +1,8 @@
 #include "QuadTree.h"
 
 
-int QuadTree::maxDepth = 6;
-int QuadTree::maxObjectsPerNode = 50;
+int QuadTree::maxDepth = 4;
+int QuadTree::maxObjectsPerNode = 100;
 
 std::vector<QuadTreeData*> QuadTreeNode::query(const Rectangle2d& area)
 {
@@ -58,7 +58,7 @@ int QuadTreeNode::objectsAmount()
         process.pop();
     }
     
-    reset();
+    reset(); 
     return objectsCnt;
 }
 
@@ -98,7 +98,7 @@ void QuadTreeNode::insert(QuadTreeData& data)
     if (isLeaf()) {
         contents_.push_back(&data);
     } else {
-        for (std::size_t i = 0, size = contents_.size(); i < size; ++i) {
+        for (std::size_t i = 0, size = children_.size(); i < size; ++i) {
             children_[i].insert(data);
         }
     }
@@ -155,7 +155,7 @@ void QuadTreeNode::shake()
 
 void QuadTreeNode::split()
 {
-    if (curDepth_ + 1 >= maxDepth) return;
+    if (curDepth_ == maxDepth) return;
 
     vec2 min = bounds_.getMin();
     vec2 max = bounds_.getMax();
@@ -172,12 +172,13 @@ void QuadTreeNode::split()
         children_.push_back(QuadTreeNode(childAreas[i]));
         children_[i].curDepth_ = curDepth_ + 1;
     }
+
     for (std::size_t i = 0, size = contents_.size(); i < size; ++i) {
-        children_[i].insert(*contents_[i]);
+        children_[0].insert(*contents_[i]);
+        children_[1].insert(*contents_[i]);
+        children_[2].insert(*contents_[i]);
+        children_[3].insert(*contents_[i]);
     }
 
     contents_.clear();
 }
-
-
-

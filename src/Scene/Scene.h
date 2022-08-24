@@ -7,6 +7,7 @@
 #include "../Objects/Swarm.h"
 #include "../Render/ShaderProgram.h"
 #include "../Render/Window.h"
+#include "QuadTree.h"
 
 class Scene
 {
@@ -24,10 +25,11 @@ public:
 
     void update(const float alpha);
 
-    // Updates information about the object in the renderBuffer
-    // i - index of the object in the renderBuffer,
+    // Updates information about the object in the objectsRenderBuffer
+    // i - index of the object in the objectsRenderBuffer,
     // obj - pointer to the object
     void updateObjectRenderInfo(GLint i, Object* obj);
+    void processInput();
     
     void render() const;
 
@@ -40,14 +42,20 @@ private:
     Scene(const Scene&) = delete;
     Scene& operator=(const Scene&) = delete; 
 
-    static float* renderBuffer;
+    static float* objectsRenderBuffer;
+    static float* quadTreeRenderBuffer;
 
     std::vector<Ant*> ants;
     std::vector<Source*> sources;
+    std::vector<QuadTreeData*> quadTreeDataSet_;
+
+    QuadTree* quadTree_;
     Window* window_;
     Renderer::ShaderProgram* shader_;
     GLuint *VAO_, *VBO_; 
     GLsizei buffersAmount_;
+
+    bool renderQuadTree = false;
 };
 
 
