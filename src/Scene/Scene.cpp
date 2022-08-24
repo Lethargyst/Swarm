@@ -104,18 +104,18 @@ void Scene::update(const float alpha)
     processInput();
 
     // Updating ants objects
-    for (std::size_t i = 0; i < Ant::getAmount(); ++i) {
+    for (std::size_t i = 0, size = Ant::getAmount(); i < size; ++i) {
         ants[i]->update(alpha);
         updateObjectRenderInfo(i, ants[i]);
     }
 
     // Updating sources objects    
-    for (std::size_t i = 0; i < Source::getAmount(); ++i) {
+    for (std::size_t i = 0, size = Source::getAmount(); i < size; ++i) {
         sources[i]->update(alpha);
         updateObjectRenderInfo(i + Ant::getAmount(), sources[i]);
     }
 
-    for (std::size_t i = 0; i < quadTreeDataSet_.size(); ++i) {
+    for (std::size_t i = 0, size = quadTreeDataSet_.size(); i < size; ++i) {
         quadTree_->update(*quadTreeDataSet_[i]);
     }
 

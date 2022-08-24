@@ -20,7 +20,12 @@ int main(int argc, char* argv[])
     Renderer::loadSource("../src/Render/Shaders/VertexShader.vert", vertexShaderSource);
     Renderer::loadSource("../src/Render/Shaders/FragmentShader.frag", fragmentShaderSource);
     Renderer::loadSource("../src/Render/Shaders/GeometryShader.geom", geometryShaderSource);
-    Renderer::ShaderProgram shader(vertexShaderSource, fragmentShaderSource, geometryShaderSource);
+
+    Renderer::ShaderProgram shader;
+    shader.compileShader(vertexShaderSource, GL_VERTEX_SHADER);
+    shader.compileShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
+    shader.compileShader(geometryShaderSource, GL_GEOMETRY_SHADER);
+    shader.linkShaders();
 
     Scene& scene = Scene::initialize(&window, &shader);
     int antsNum;
@@ -39,7 +44,7 @@ int main(int argc, char* argv[])
             lastTime = time;
             alpha += 0.001f;
             scene.update(alpha);
-            scene.render(); 
+            scene.render();
         }
     }
 
