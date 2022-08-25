@@ -12,13 +12,12 @@
 class Scene
 {
 public:
-    static Scene& initialize(Window* window, Renderer::ShaderProgram* shader);
+    static Scene& initialize(Window* window);
 
     void initBuffers(GLsizei num);
     void setBufferData(GLint bufferIndex, GLsizei size, void* data, GLenum usage);
     void configBuffer(GLuint index, GLsizei size, GLenum type, 
                       GLboolean normalize, GLsizei stride, const void* offset);
-    void updateBuffer(GLint bufferIndex, GLsizei size, void* data, GLenum usage);
 
     void genAnts(GLint num);
     void genSources(GLint num);
@@ -36,11 +35,13 @@ public:
     GLint objectsAmount_;
 private:
     Scene() {}
-    Scene(Window* window, Renderer::ShaderProgram* shader) : window_(window), shader_(shader) {} 
+    Scene(Window* window) : window_(window) {} 
     ~Scene();
 
     Scene(const Scene&) = delete;
     Scene& operator=(const Scene&) = delete; 
+
+    void loadShaders();
 
     static float* objectsRenderBuffer;
     static float* quadTreeRenderBuffer;
@@ -48,14 +49,14 @@ private:
     std::vector<Ant*> ants;
     std::vector<Source*> sources;
     std::vector<QuadTreeData*> quadTreeDataSet_;
+    std::vector<Renderer::ShaderProgram*> shaders_;
 
     QuadTree* quadTree_;
     Window* window_;
-    Renderer::ShaderProgram* shader_;
     GLuint *VAO_, *VBO_; 
     GLsizei buffersAmount_;
 
-    bool renderQuadTree = false;
+    bool renderingQuadTree = false;
 };
 
 

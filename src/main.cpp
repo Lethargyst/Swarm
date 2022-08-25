@@ -16,19 +16,8 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    std::string vertexShaderSource, fragmentShaderSource, geometryShaderSource;
-    Renderer::loadSource("../src/Render/Shaders/VertexShader.vert", vertexShaderSource);
-    Renderer::loadSource("../src/Render/Shaders/FragmentShader.frag", fragmentShaderSource);
-    Renderer::loadSource("../src/Render/Shaders/GeometryShader.geom", geometryShaderSource);
-
-    Renderer::ShaderProgram shader;
-    shader.compileShader(vertexShaderSource, GL_VERTEX_SHADER);
-    shader.compileShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
-    shader.compileShader(geometryShaderSource, GL_GEOMETRY_SHADER);
-    shader.linkShaders();
-
-    Scene& scene = Scene::initialize(&window, &shader);
-    int antsNum;
+    Scene& scene = Scene::initialize(&window);
+    int antsNum = 1000;
     sscanf(argv[1], "%i", &antsNum);
     scene.genAnts(antsNum);
     scene.genSources(2);
@@ -40,7 +29,7 @@ int main(int argc, char* argv[])
         double time = glfwGetTime();
         double deltaTime = time - lastTime;
 
-        if( deltaTime >= MAX_PERIOD ) {
+        if (deltaTime >= MAX_PERIOD) {
             lastTime = time;
             alpha += 0.001f;
             scene.update(alpha);
