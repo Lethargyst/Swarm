@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "../precompiled.h"
+#include "Geometry2D.h"
 
 class Object
 {
@@ -15,6 +16,7 @@ public:
     void changeDirection(const float dir); 
     void setMovementSpread(const float radian);
 
+    Rectangle2d bounds_;
     vec3 color_;
     vec2 pos_;
     float size_;

@@ -1,6 +1,5 @@
 #include <iostream>
 #include <math.h>
-#include "windows.h"
 #include "Math/Vectors.h"
 #include "Scene/Scene.h"
 
@@ -17,6 +16,8 @@ int main(int argc, char* argv[])
     }
 
     Scene& scene = Scene::initialize(&window);
+    scene.initBuffers();
+    
     int antsNum = 1000;
     sscanf(argv[1], "%i", &antsNum);
     scene.genAnts(antsNum);
@@ -38,5 +39,6 @@ int main(int argc, char* argv[])
     }
 
     glfwTerminate();
+
     return 0;
 }

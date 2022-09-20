@@ -12,14 +12,12 @@ float Line2d::lengthSq() const
 
 vec2 Rectangle2d::getMin() const
 {
-    vec2 tmp = origin_ + size_;
-    return vec2(fminf(origin_.x, tmp.x), fminf(origin_.y, tmp.y));
+    return origin_;
 }
 
 vec2 Rectangle2d::getMax() const
 {
-    vec2 tmp = origin_ + size_;
-    return vec2(fmaxf(origin_.x, tmp.x), fmaxf(origin_.y, tmp.y));
+    return origin_ + size_;
 }
 
 Rectangle2d fromMinMax(const vec2& min, const vec2& max)

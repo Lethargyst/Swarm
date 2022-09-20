@@ -17,7 +17,7 @@ namespace Renderer
             glGetShaderInfoLog(shaderID, 512, NULL, infoLog);
             std::cerr << "Shader Program: COMPILATION ERROR\n" 
                         << "----------------------------------\n"
-                        << infoLog  << "\n"
+                        << infoLog 
                         << "----------------------------------\n";
             return false;
         }
@@ -33,6 +33,7 @@ namespace Renderer
             glAttachShader(ID_, shaders_[i]);
             glDeleteShader(shaders_[i]);
         }
+        shaders_.clear();
         glLinkProgram(ID_);
 
         int success;

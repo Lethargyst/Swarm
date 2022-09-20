@@ -3,6 +3,13 @@
 
 #include "../Math/Vectors.h"
 
+enum ShapeType {
+    POINT2D,
+    LINE2D,
+    CIRCLE2D,
+    RECTANGLE2D
+};
+
 typedef vec2 Point2d;
 
 struct Line2d 

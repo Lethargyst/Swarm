@@ -3,46 +3,69 @@
 
 #include <vector>
 #include <queue>
-#include <stdio.h>
+#include <iostream>
+#include <memory>
 #include "../Objects/CollisionManager.h"
 #include "../Objects/Objects.h"
 #include "../Objects/Geometry2d.h"
+#include "../Render/Window.h"
 #include "../precompiled.h"
-
 
 struct QuadTreeData
 {
-    QuadTreeData(Object* object, const Rectangle2d& bounds) : object_(object), bounds_(bounds) {}
+    QuadTreeData(Object* object) : object_(object) {}
+    ~QuadTreeData() {}
 
-    Rectangle2d bounds_;
     Object* object_;
+    ShapeType shapeType;
 };
 
 class QuadTreeNode
 {
 public:
-    QuadTreeNode(const Rectangle2d& bounds) : bounds_(bounds) {}
-    
-    std::vector<QuadTreeData*>* getObjects(const Rectangle2d& area) const;
-    std::vector<Rectangle2d*> getLeafs() const;
-    
+    QuadTreeNode(const Rectangle2d& bounds, unsigned int depth) 
+        : bounds_(bounds), curDepth_(depth) {}
+
     bool isLeaf() const;
-    bool remove(QuadTreeData& data);
-    void insert(QuadTreeData& data);
-    void update(QuadTreeData& data);
-    void shake();
+    unsigned getObectsCnt() const;
+    unsigned getLeafsCnt() const;
+    // void get(const Circle& area, std::vector<Object*>& dest);
+    // void get(const Rectangle2d& area, std::vector<Object*>& dest);
+
+    void getLeafs(std::vector<Rectangle2d*>& dest);
+    void insert(std::shared_ptr<QuadTreeData> data);
     void split();
     void clear();
-
-protected:
-    std::vector<QuadTreeNode> children_;
-    std::vector<QuadTreeData*> contents_;
+private:
+    std::vector<std::shared_ptr<QuadTreeNode>> children_;
+    std::vector<std::shared_ptr<QuadTreeData>> content_;
+    
     Rectangle2d bounds_;
-    static int maxDepth, maxObjectsPerNode;
-    int curDepth_ = 0;
-    int objectsAmount_ = 0;
+    static unsigned int maxDepth, maxObjectsPerNode, 
+                        objectsAmount, leafsAmount;
+    unsigned int curDepth_;
 };
 
-typedef QuadTreeNode QuadTree;
+class QuadTree
+{
+public:
+    QuadTree(Window* window);
+    QuadTree() {};
+
+    unsigned getObjectsCnt() const;
+    unsigned getLeafsCnt() const;
+    // void get(const Circle& area, std::vector<Object*>& dest);
+    // void get(const Rectangle2d& area, std::vector<Object*>& dest);
+    void getLeafs(std::vector<Rectangle2d*>& dest) const;
+
+    
+    void insert(Object* object);
+    void update(std::vector<Object*>& objects);
+    void clear();
+private:
+    QuadTreeNode* zeroNode_;
+    Window* window_;
+};
+
 
 #endif
