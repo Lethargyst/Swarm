@@ -25,7 +25,9 @@ bool CollisionManager::PointRect(const Point2d& point, const Rectangle2d& rect)
 {
     vec2 min = rect.getMin();
     vec2 max = rect.getMax();
-    return (min.x <= point.x <= max.x) && (min.y <= point.y <= max.y);
+
+    return (min.x <= point.x) && (point.x <= max.x) && 
+           (min.y <= point.y) && (point.y <= max.y);
 }
 
 bool CollisionManager::RectPoint(const Rectangle2d& rect, const Point2d& point)

@@ -20,6 +20,7 @@ struct QuadTreeData
     ShapeType shapeType;
 };
 
+
 class QuadTreeNode
 {
 public:
@@ -33,10 +34,15 @@ public:
     // void get(const Rectangle2d& area, std::vector<Object*>& dest);
 
     void getLeafs(std::vector<Rectangle2d*>& dest);
+    // insert data into leafs
     void insert(std::shared_ptr<QuadTreeData> data);
+    // split the leaf in 4 child nodes
     void split();
+    // clear content in leafs
     void clear();
+
 private:
+
     std::vector<std::shared_ptr<QuadTreeNode>> children_;
     std::vector<std::shared_ptr<QuadTreeData>> content_;
     
@@ -58,8 +64,9 @@ public:
     // void get(const Rectangle2d& area, std::vector<Object*>& dest);
     void getLeafs(std::vector<Rectangle2d*>& dest) const;
 
-    
-    void insert(Object* object);
+    // insert data into quad tree
+    void insert(Object* object); 
+    // rebuild the quad tree according to array
     void update(std::vector<Object*>& objects);
     void clear();
 private:

@@ -44,10 +44,9 @@ void Scene::initBuffers()
     glBindVertexArray(VAO_[1]);
     glBindBuffer(GL_ARRAY_BUFFER, VBO_[1]);
     glBufferData(GL_ARRAY_BUFFER, QUAD_TREE_BUFFER_SIZE, quadTreeRenderBuffer, GL_DYNAMIC_DRAW);
-    glEnableVertexAttribArray(VAO_[1]);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(2 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
     glEnableVertexAttribArray(1);
 }
 
@@ -86,8 +85,8 @@ void Scene::genAnts(GLint num)
 {
     vec2 resolution = window_->getResolution();
     for (std::size_t i = 0; i < num; ++i) {
-        vec2 pos = vec2(rand() % (int)resolution.x,
-                        rand() % (int)resolution.y);
+        vec2 pos = vec2(200.0f + rand() % (int)resolution.x / 5,
+                        200.0f + rand() % (int)resolution.y / 5);
         vec3 color = vec3(255.0f, 255.0f, 255.0f);
         Ant* ant = new Ant(pos, 25.0f, 2.0f, ANT_SIZE, color);
         ants.push_back(ant);
@@ -118,12 +117,11 @@ void Scene::updateQuadTreeBuffer() {
     std::vector<Rectangle2d*> leafs;
     quadTree_.getLeafs(leafs);
 
-    std::cout << leafs.size() << "\n";
     vec2 min, max;
     for (std::size_t i = 0, size = leafs.size(); i < size; ++i) {
         min = leafs[i]->getMin();
         max = leafs[i]->getMax();
-        
+
         quadTreeRenderBuffer[i * 4] = min.x;
         quadTreeRenderBuffer[i * 4 + 1] = min.y;
         quadTreeRenderBuffer[i * 4 + 2] = max.x - min.x;
@@ -148,11 +146,10 @@ void Scene::update(const float alpha)
     }
 
     quadTree_.update(ants);
-
     // Updating quad tree rendering data
-    // if (renderingQuadTree) {
-    //     updateQuadTreeBuffer();
-    // }
+    if (renderingQuadTree) {
+        updateQuadTreeBuffer();
+    }
 
     objectsAmount_ = Ant::getAmount() + Source::getAmount();
 }
@@ -178,18 +175,24 @@ void Scene::render() const
     glBindVertexArray(VAO_[0]);
     glDrawArrays(GL_POINTS, 0, objectsAmount_);
  
-    // if (renderingQuadTree) {
-    //     shaders_[1]->use();
+    if (renderingQuadTree) {
+        shaders_[1]->use();
 
-    //     vec2 resolution = window_->getResolution();
-    //     glUniform2f(glGetUniformLocation(shaders_[1]->getID(), "resolution"), resolution.x, resolution.y);
+        vec2 resolution = window_->getResolution();
+        glUniform2f(glGetUniformLocation(shaders_[1]->getID(), "resolution"), resolution.x, resolution.y);
 
-    //     glBindBuffer(GL_ARRAY_BUFFER, VBO_[1]);
-    //     glBufferSubData(GL_ARRAY_BUFFER, 0, quadTree_.getLeafsCnt() * 4 * sizeof(float), quadTreeRenderBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO_[1]);
 
-    //     glBindVertexArray(VAO_[1]);
-    //     glDrawArrays(GL_POINTS, 0, quadTree_.getLeafsCnt() * 2);
-    // }
+        // std::cout << quadTree_.getLeafsCnt() << "\n";
+        // for (std::size_t i = 0, size = quadTree_.getLeafsCnt() * 4; i < size; ++i) 
+        //     std::cout << quadTreeRenderBuffer[i] << " ";
+        // std::cout << "\n";
+
+        glBufferSubData(GL_ARRAY_BUFFER, 0, quadTree_.getLeafsCnt() * 4 * sizeof(float), quadTreeRenderBuffer);
+
+        glBindVertexArray(VAO_[1]);
+        glDrawArrays(GL_POINTS, 0, quadTree_.getLeafsCnt());
+    }
 
     glfwSwapBuffers(window_->glWindow_);
     glfwPollEvents();
@@ -202,4 +205,17 @@ void Scene::processInput()
 
     if (glfwGetKey(window_->glWindow_, GLFW_KEY_SPACE) == GLFW_PRESS)
         renderingQuadTree = !renderingQuadTree;
+
+    vec2 velocity;
+    if (glfwGetKey(window_->glWindow_, GLFW_KEY_UP) == GLFW_PRESS)
+        velocity = {0.0f, 5.0f};
+    if (glfwGetKey(window_->glWindow_, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        velocity = {5.0f, 0.0f};
+    if (glfwGetKey(window_->glWindow_, GLFW_KEY_DOWN) == GLFW_PRESS)
+        velocity = {0.0f, -5.0f};
+    if (glfwGetKey(window_->glWindow_, GLFW_KEY_LEFT) == GLFW_PRESS)
+        velocity = {-5.0f, 0.0f};
+
+    for (std::size_t i = 0, size = ants.size(); i < size; ++i)
+        ants[i]->pos_ += velocity;
 }

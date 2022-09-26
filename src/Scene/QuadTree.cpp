@@ -21,14 +21,20 @@ unsigned QuadTreeNode::getLeafsCnt() const
 
 void QuadTreeNode::insert(std::shared_ptr<QuadTreeData> data)
 {
-    if (!CollisionManager::RectRect(data->object_->bounds_, bounds_)) return;
+    // checking for intersection of data object and node
+
+              
+    if (!CollisionManager::PointRect(data->object_->pos_, bounds_)) return;
     
+    // checking for split
     if (isLeaf() && content_.size() == maxObjectsPerNode) split();
 
     if (isLeaf()) {
+        // add data in the array of objects
         content_.push_back(std::shared_ptr<QuadTreeData>(data));
         objectsAmount++;
     } else {
+        // insert data into child nodes
         for (std::size_t i = 0, size = children_.size(); i < size; ++i)
             children_[i]->insert(data);
     }
@@ -37,12 +43,13 @@ void QuadTreeNode::insert(std::shared_ptr<QuadTreeData> data)
 
 void QuadTreeNode::split()
 {
-    if (curDepth_ >= maxDepth) return;
+    if (curDepth_ >= maxDepth) return;      
 
     vec2 min = bounds_.getMin();
     vec2 max = bounds_.getMax();
     vec2 center = min + ((max - min) * 0.5);
 
+    // creates bounds of children
     Rectangle2d childAreas[] = {
         Rectangle2d(fromMinMax(min, center)),
         Rectangle2d(fromMinMax(vec2(min.x, center.y), vec2(center.x, max.y))),
@@ -50,37 +57,38 @@ void QuadTreeNode::split()
         Rectangle2d(fromMinMax(vec2(center.x, min.y), vec2(max.x, center.y)))
     };
 
+    // create children
     for (std::size_t i = 0; i < 4; ++i)
         children_.push_back(std::make_shared<QuadTreeNode>(QuadTreeNode(childAreas[i], curDepth_ + 1)));
 
+    // repalce content of current node into children nodes
     for (std::size_t i = 0, size = content_.size(); i < size; ++i) {
         children_[0]->insert(content_[i]);
         children_[1]->insert(content_[i]);
         children_[2]->insert(content_[i]);
         children_[3]->insert(content_[i]);
     }
-
+ 
     leafsAmount += 3;
     content_.clear();
 }
 
-// void QuadTreeNode::getLeafs(std::vector<Rectangle2d*>& dest)
-// {
-//     std::queue<QuadTreeNode*> process;
-//     process.push(this);
+void QuadTreeNode::getLeafs(std::vector<Rectangle2d*>& dest)
+{
+    std::queue<QuadTreeNode*> process;
+    process.push(this);
 
-//     while (process.size() != 0) {
-//         QuadTreeNode* processing = process.front();
-//         if (processing->isLeaf()) {
-//             for (std::size_t i = 0, size = processing->content_.size(); i < size; ++i)
-//                 dest.push_back(&processing->bounds_);
-//         } else {
-//             for (std::size_t i = 0, size = processing->children_.size(); i < size; ++i)
-//                 process.push(processing->children_[i].get());
-//         }
-//         process.pop();
-//     }
-// }
+    while (process.size() != 0) {
+        QuadTreeNode* processing = process.front();
+        if (processing->isLeaf()) {
+            dest.push_back(&processing->bounds_);
+        } else {
+            for (std::size_t i = 0, size = processing->children_.size(); i < size; ++i)
+                process.push(processing->children_[i].get());
+        }
+        process.pop();
+    }
+}
 
 void QuadTreeNode::clear()
 {
@@ -88,6 +96,7 @@ void QuadTreeNode::clear()
     process.push(this);
 
     while (process.size() > 0) {
+        // takes the oldest element in process
         QuadTreeNode* processing = process.front();
         
         if (processing->isLeaf()) {
@@ -97,9 +106,12 @@ void QuadTreeNode::clear()
             for (std::size_t i = 0, size = processing->children_.size(); i < size; ++i) 
                 process.push(processing->children_[i].get());
         }
+
         process.pop();
     }
-    leafsAmount = 0;
+    children_.clear();
+    leafsAmount = 1;
+    objectsAmount = 0;
 }
 
 QuadTree::QuadTree(Window* window)
@@ -120,7 +132,7 @@ QuadTree::QuadTree(Window* window)
 
 unsigned QuadTree::getLeafsCnt() const
 {
-    return zeroNode_->getLeafsCnt();
+    return zeroNode_->getLeafsCnt(); 
 }
 
 void QuadTree::insert(Object* object)
