@@ -21,6 +21,16 @@ bool CollisionManager::RectCircle(const Rectangle2d& rect, const Circle& circle)
     return CircleRect(circle, rect);
 }
 
+bool CollisionManager::CirclePoint(const Circle& circle, const Point2d& point)
+{
+    return distanceSq(circle.pos_, point) <= circle.radius_ * circle.radius_;
+}
+
+bool CollisionManager::PointCircle(const Point2d& point, const Circle& circle)
+{
+    return CirclePoint(circle, point);
+}
+
 bool CollisionManager::PointRect(const Point2d& point, const Rectangle2d& rect)
 {
     vec2 min = rect.getMin();

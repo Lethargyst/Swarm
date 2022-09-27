@@ -16,8 +16,37 @@ unsigned QuadTreeNode::getLeafsCnt() const
     return leafsAmount;
 }
  
-// void QuadTreeNode::get(const Circle& area, std::vector<Object*>& dest) {}
-// void QuadTreeNode::get(const Rectangle2d& area, std::vector<Object*>& dest) {}
+void QuadTreeNode::get(const Circle& area, std::vector<Object*>& dest) 
+{
+    if (!CollisionManager::CircleRect(area, bounds_)) return;
+
+    if (isLeaf()) {
+        for (std::size_t i = 0, size = content_.size(); i < size; ++i) {
+            if (CollisionManager::PointCircle(content_[i]->object_->pos_, area))
+                dest.push_back(content_[i]->object_);
+        }
+    } else {
+        for (std::size_t i = 0, size = children_.size(); i < size; ++i) {
+            children_[i]->get(area, dest);
+        }
+    }
+}
+
+void QuadTreeNode::get(const Rectangle2d& area, std::vector<Object*>& dest) 
+{
+    if (!CollisionManager::RectRect(area, bounds_)) return;
+
+    if (isLeaf()) {
+        for (std::size_t i = 0, size = content_.size(); i < size; ++i) {
+            if (CollisionManager::PointRect(content_[i]->object_->pos_, area))
+                dest.push_back(content_[i]->object_);
+        }
+    } else {
+        for (std::size_t i = 0, size = children_.size(); i < size; ++i) {
+            children_[i]->get(area, dest);
+        }
+    }
+}
 
 void QuadTreeNode::insert(std::shared_ptr<QuadTreeData> data)
 {
@@ -120,15 +149,15 @@ QuadTree::QuadTree(Window* window)
     zeroNode_ = new QuadTreeNode(window->getBounds(), 0);
 }
 
-// void QuadTree::get(const Circle& area, std::vector<Object*>& dest) 
-// {
-//     zeroNode_->get(area, dest);
-// }
+void QuadTree::get(const Circle& area, std::vector<Object*>& dest) 
+{
+    zeroNode_->get(area, dest);
+}
 
-// void QuadTree::get(const Rectangle2d& area, std::vector<Object*>& dest) 
-// {
-//     zeroNode_->get(area, dest);
-// }
+void QuadTree::get(const Rectangle2d& area, std::vector<Object*>& dest) 
+{
+    zeroNode_->get(area, dest);
+}
 
 unsigned QuadTree::getLeafsCnt() const
 {
@@ -156,4 +185,3 @@ void QuadTree::clear()
 {
     zeroNode_->clear();
 }
-

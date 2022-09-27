@@ -30,8 +30,8 @@ public:
     bool isLeaf() const;
     unsigned getObectsCnt() const;
     unsigned getLeafsCnt() const;
-    // void get(const Circle& area, std::vector<Object*>& dest);
-    // void get(const Rectangle2d& area, std::vector<Object*>& dest);
+    void get(const Circle& area, std::vector<Object*>& dest);
+    void get(const Rectangle2d& area, std::vector<Object*>& dest);
 
     void getLeafs(std::vector<Rectangle2d*>& dest);
     // insert data into leafs
@@ -60,8 +60,8 @@ public:
 
     unsigned getObjectsCnt() const;
     unsigned getLeafsCnt() const;
-    // void get(const Circle& area, std::vector<Object*>& dest);
-    // void get(const Rectangle2d& area, std::vector<Object*>& dest);
+    void get(const Circle& area, std::vector<Object*>& dest);
+    void get(const Rectangle2d& area, std::vector<Object*>& dest);
     void getLeafs(std::vector<Rectangle2d*>& dest) const;
 
     // insert data into quad tree
