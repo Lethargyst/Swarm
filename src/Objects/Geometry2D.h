@@ -12,6 +12,11 @@ enum ShapeType {
 
 typedef vec2 Point2d;
 
+struct Shape
+{
+    Shape() {}
+};
+
 struct Line2d 
 {
     Line2d() {}
@@ -24,7 +29,7 @@ struct Line2d
     Point2d start_, end_;
 };
 
-struct Rectangle2d
+struct Rectangle2d : Shape
 {
     Rectangle2d(const Point2d& origin, const vec2& size) : origin_(origin), size_(size) {} 
     Rectangle2d(const Rectangle2d& other) : origin_(other.origin_), size_(other.size_) {}
@@ -40,11 +45,12 @@ struct Rectangle2d
     float rotation = 0.0f;
 };
 
-struct Circle
+struct Circle : Shape
 {
     Circle(const Point2d& pos, const float radius) : pos_(pos), radius_(radius) {}
     Circle(const Circle& other) : pos_(other.pos_), radius_(other.radius_) {}
-
+    Circle() {}
+    
     Point2d pos_;
     float radius_;
 };

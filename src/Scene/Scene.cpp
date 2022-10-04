@@ -82,7 +82,9 @@ void Scene::loadShaders()
 }
 
 void Scene::genAnts(GLint num)
-{
+{   
+    using namespace Swarm;
+
     vec2 resolution = window_->getResolution();
     for (std::size_t i = 0; i < num; ++i) {
         vec2 pos = vec2(200.0f + rand() % (int)resolution.x / 5,
@@ -95,11 +97,13 @@ void Scene::genAnts(GLint num)
 
 void Scene::genSources(GLint num)
 {
+    using namespace Swarm;
+
     vec2 resolution = window_->getResolution();
     for (std::size_t i = 0; i < num; ++i) {
         vec2 pos = vec2(rand() % (int)resolution.x, rand() % (int)resolution.y);
         vec3 color = vec3((int)pos.x % 255, (int)pos.y % 255, (int)rand() % 255);
-        sources.push_back(new Source(pos, 2.0f, SOURCE_SIZE, color));
+        sources.push_back(new Swarm::Source(pos, 2.0f, SOURCE_SIZE, color));
     }
 }
 
@@ -134,15 +138,15 @@ void Scene::update(const float alpha)
     processInput();
 
     // Updating ants objects
-    for (std::size_t i = 0, size = Ant::getAmount(); i < size; ++i) {
+    for (std::size_t i = 0, size = Swarm::Ant::getAmount(); i < size; ++i) {
          ants[i]->update(alpha);
         updateObjectRenderInfo(i, ants[i]);
     }
 
     // Updating sources objects    
-    for (std::size_t i = 0, size = Source::getAmount(); i < size; ++i) {
+    for (std::size_t i = 0, size = Swarm::Source::getAmount(); i < size; ++i) {
         sources[i]->update(alpha);
-        updateObjectRenderInfo(i + Ant::getAmount(), sources[i]);
+        updateObjectRenderInfo(i + Swarm::Ant::getAmount(), sources[i]);
     }
 
     quadTree_.update(ants);
@@ -150,8 +154,8 @@ void Scene::update(const float alpha)
     if (renderingQuadTree) {
         updateQuadTreeBuffer();
     }
-
-    objectsAmount_ = Ant::getAmount() + Source::getAmount();
+    
+    objectsAmount_ = Swarm::Ant::getAmount() + Swarm::Source::getAmount();
 }
 
 void Scene::render() const
@@ -182,12 +186,6 @@ void Scene::render() const
         glUniform2f(glGetUniformLocation(shaders_[1]->getID(), "resolution"), resolution.x, resolution.y);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO_[1]);
-
-        // std::cout << quadTree_.getLeafsCnt() << "\n";
-        // for (std::size_t i = 0, size = quadTree_.getLeafsCnt() * 4; i < size; ++i) 
-        //     std::cout << quadTreeRenderBuffer[i] << " ";
-        // std::cout << "\n";
-
         glBufferSubData(GL_ARRAY_BUFFER, 0, quadTree_.getLeafsCnt() * 4 * sizeof(float), quadTreeRenderBuffer);
 
         glBindVertexArray(VAO_[1]);
