@@ -17,9 +17,9 @@ struct QuadTreeData
     ~QuadTreeData() {}
 
     Object* object_;
+    vec2 pos;
     ShapeType shapeType;
 };
-
 
 class QuadTreeNode
 {
@@ -55,8 +55,7 @@ private:
 class QuadTree
 {
 public:
-    QuadTree(Window* window);
-    QuadTree() {};
+    QuadTree();
 
     unsigned getObjectsCnt() const;
     unsigned getLeafsCnt() const;
@@ -67,11 +66,10 @@ public:
     // insert data into quad tree
     void insert(Object* object); 
     // rebuild the quad tree according to array
-    void update(std::vector<Object*>& objects);
+    void update(const std::vector<Object*>& objects);
     void clear();
 private:
     QuadTreeNode* zeroNode_;
-    Window* window_;
 };
 
 

@@ -27,9 +27,6 @@ add_executable( ${PROJECT_NAME}
     src/Objects/Objects.h
     src/Objects/Objects.cpp
     
-    src/Objects/Swarm.h
-    src/Objects/Swarm.cpp
-    
     src/Render/ShaderProgram.h
     src/Render/ShaderProgram.cpp
     
@@ -41,6 +38,9 @@ add_executable( ${PROJECT_NAME}
 
     src/Scene/Scene.h
     src/Scene/Scene.cpp
+
+    src/Scene/Swarm.h
+    src/Scene/Swarm.cpp
 )
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)

@@ -16,7 +16,7 @@ Scene& Scene::initialize(Window* window)
     static Scene sceneObj(window);
 
     vec2 resolution = window->getResolution();
-    sceneObj.quadTree_ = QuadTree(window);
+    sceneObj.quadTree_ = QuadTree();
 
     return sceneObj;
 }
@@ -81,30 +81,9 @@ void Scene::loadShaders()
     shaders_.push_back(quadTreeShader);
 }
 
-void Scene::genAnts(GLint num)
-{   
-    using namespace Swarm;
-
-    vec2 resolution = window_->getResolution();
-    for (std::size_t i = 0; i < num; ++i) {
-        vec2 pos = vec2(200.0f + rand() % (int)resolution.x / 5,
-                        200.0f + rand() % (int)resolution.y / 5);
-        vec3 color = vec3(255.0f, 255.0f, 255.0f);
-        Ant* ant = new Ant(pos, 25.0f, 2.0f, ANT_SIZE, color);
-        ants.push_back(ant);
-    }
-}
-
-void Scene::genSources(GLint num)
+void Scene::initSwarm(int antsNum, int sourcesNum)
 {
-    using namespace Swarm;
-
-    vec2 resolution = window_->getResolution();
-    for (std::size_t i = 0; i < num; ++i) {
-        vec2 pos = vec2(rand() % (int)resolution.x, rand() % (int)resolution.y);
-        vec3 color = vec3((int)pos.x % 255, (int)pos.y % 255, (int)rand() % 255);
-        sources.push_back(new Swarm::Source(pos, 2.0f, SOURCE_SIZE, color));
-    }
+    swarm.initialize(antsNum, sourcesNum);
 }
 
 void Scene::updateObjectRenderInfo(GLint i, Object* obj)
@@ -117,19 +96,33 @@ void Scene::updateObjectRenderInfo(GLint i, Object* obj)
     objectsRenderBuffer[i * 6 + 5] = obj->color_.z;   
 }
 
-void Scene::updateQuadTreeBuffer() {
+void Scene::updateSwarmRenderInfo() 
+{
+    for (std::size_t i = 0, size = Ant::getAmount(); i < size; ++i) {
+        updateObjectRenderInfo(i, swarm.ants_[i]);
+    }
+
+    // Updating sources objects    
+    for (std::size_t i = 0, size = Source::getAmount(); i < size; ++i) {
+        updateObjectRenderInfo(i + Ant::getAmount(), swarm.sources_[i]);
+    }    
+}  
+
+void Scene::updateQuadTreeBuffer() 
+{
     std::vector<Rectangle2d*> leafs;
     quadTree_.getLeafs(leafs);
 
+    vec2 area = window_->getBounds().getMax();
     vec2 min, max;
     for (std::size_t i = 0, size = leafs.size(); i < size; ++i) {
         min = leafs[i]->getMin();
         max = leafs[i]->getMax();
 
-        quadTreeRenderBuffer[i * 4] = min.x;
-        quadTreeRenderBuffer[i * 4 + 1] = min.y;
-        quadTreeRenderBuffer[i * 4 + 2] = max.x - min.x;
-        quadTreeRenderBuffer[i * 4 + 3] = max.y - min.y;
+        quadTreeRenderBuffer[i * 4] = min.x * area.x;
+        quadTreeRenderBuffer[i * 4 + 1] = min.y * area.y;
+        quadTreeRenderBuffer[i * 4 + 2] = (max.x - min.x) * area.x;
+        quadTreeRenderBuffer[i * 4 + 3] = (max.y - min.y) * area.y;
     }
 }
 
@@ -137,25 +130,16 @@ void Scene::update(const float alpha)
 {
     processInput();
 
-    // Updating ants objects
-    for (std::size_t i = 0, size = Swarm::Ant::getAmount(); i < size; ++i) {
-         ants[i]->update(alpha);
-        updateObjectRenderInfo(i, ants[i]);
-    }
+    swarm.update(alpha);
+    updateSwarmRenderInfo();
 
-    // Updating sources objects    
-    for (std::size_t i = 0, size = Swarm::Source::getAmount(); i < size; ++i) {
-        sources[i]->update(alpha);
-        updateObjectRenderInfo(i + Swarm::Ant::getAmount(), sources[i]);
-    }
-
-    quadTree_.update(ants);
+    quadTree_.update(swarm.ants_);
     // Updating quad tree rendering data
     if (renderingQuadTree) {
         updateQuadTreeBuffer();
     }
     
-    objectsAmount_ = Swarm::Ant::getAmount() + Swarm::Source::getAmount();
+    objectsAmount_ = Ant::getAmount() + Source::getAmount();
 }
 
 void Scene::render() const
@@ -206,14 +190,14 @@ void Scene::processInput()
 
     vec2 velocity;
     if (glfwGetKey(window_->glWindow_, GLFW_KEY_UP) == GLFW_PRESS)
-        velocity = {0.0f, 5.0f};
+        velocity = {0.0f, 0.05f};
     if (glfwGetKey(window_->glWindow_, GLFW_KEY_RIGHT) == GLFW_PRESS)
-        velocity = {5.0f, 0.0f};
+        velocity = {0.05f, 0.0f};
     if (glfwGetKey(window_->glWindow_, GLFW_KEY_DOWN) == GLFW_PRESS)
-        velocity = {0.0f, -5.0f};
+        velocity = {0.0f, -0.05f};
     if (glfwGetKey(window_->glWindow_, GLFW_KEY_LEFT) == GLFW_PRESS)
-        velocity = {-5.0f, 0.0f};
+        velocity = {-0.05f, 0.0f};
 
-    for (std::size_t i = 0, size = ants.size(); i < size; ++i)
-        ants[i]->pos_ += velocity;
+    for (std::size_t i = 0, size = swarm.ants_.size(); i < size; ++i)
+        swarm.ants_[i]->pos_ += velocity;
 }

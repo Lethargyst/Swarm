@@ -143,10 +143,9 @@ void QuadTreeNode::clear()
     objectsAmount = 0;
 }
 
-QuadTree::QuadTree(Window* window)
+QuadTree::QuadTree()
 {
-    window_ = window;
-    zeroNode_ = new QuadTreeNode(window->getBounds(), 0);
+    zeroNode_ = new QuadTreeNode(Rectangle2d(0.0f, 0.0f, 1.0f, 1.0f), 0);
 }
 
 void QuadTree::get(const Circle& area, std::vector<Object*>& dest) 
@@ -174,7 +173,7 @@ void QuadTree::getLeafs(std::vector<Rectangle2d*>& dest) const
     zeroNode_->getLeafs(dest);
 }
 
-void QuadTree::update(std::vector<Object*>& objects)
+void QuadTree::update(const std::vector<Object*>& objects)
 {
     zeroNode_->clear();
     for (std::size_t i = 0, size = objects.size(); i < size; ++i)

@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 #include <vector>
 #include "../precompiled.h"
-#include "../Objects/Swarm.h"
+#include "../Scene/Swarm.h"
 #include "../Render/ShaderProgram.h"
 #include "../Render/Window.h"
 #include "QuadTree.h"
@@ -14,14 +14,14 @@ class Scene
 public:
     static Scene& initialize(Window* window);
 
-    void genAnts(GLint num);
-    void genSources(GLint num);
+    // void genAnts(GLint num);
+    // void genSources(GLint num);
     void update(const float alpha);
 
     // Updates information about the object in the objectsRenderBuffer
     // i - index of the object in the objectsRenderBuffer,
     // obj - pointer to the object
-    void updateObjectRenderInfo(GLint i, Object* obj);
+    void initSwarm(int antsNum, int sourcesNum);
     void processInput();    
     void initBuffers();
     void render() const;
@@ -35,14 +35,15 @@ private:
     Scene(const Scene&) = delete;
     Scene& operator=(const Scene&) = delete; 
 
-    void loadShaders();
+    void updateObjectRenderInfo(GLint i, Object* obj);
     void updateQuadTreeBuffer();
+    void updateSwarmRenderInfo();
+    void loadShaders();
+
+    std::vector<Renderer::ShaderProgram*> shaders_;
 
     QuadTree quadTree_;
-
-    std::vector<Object*> ants;  
-    std::vector<Object*> sources;
-    std::vector<Renderer::ShaderProgram*> shaders_;
+    Swarm swarm;
 
     static float* objectsRenderBuffer;
     static float* quadTreeRenderBuffer;

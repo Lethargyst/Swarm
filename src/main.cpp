@@ -20,8 +20,7 @@ int main(int argc, char* argv[])
     
     int antsNum = 1000;
     sscanf(argv[1], "%i", &antsNum);
-    scene.genAnts(antsNum);
-    scene.genSources(2);
+    scene.initSwarm(antsNum, 2);
 
     float lastTime = 0.0f;
     float alpha = 1.0f; 
