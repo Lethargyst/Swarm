@@ -6,21 +6,6 @@ int Ant::amount = 0;
 int Source::getAmount() { return amount; }
 int Ant::getAmount() { return amount; }
 
-const Circle& Ant::getShape() const
-{
-    return shape_;
-}
-
-const Circle& Source::getShape() const
-{
-    return shape_;
-}
-
-bool Ant::isCollideSource(const Source& source)
-{
-    return CollisionManager::CircleCircle(this->getShape(), source.getShape());
-}
-
 Source::Source(const vec2& pos, float speed, float size, const vec3& color)
     : Object(pos, speed, size, color) 
 {
@@ -78,9 +63,13 @@ void Swarm::initialize(int antsNum, int sourcesNum)
 
 void Swarm::update(const float alpha)
 {
-    for (std::size_t i = 0, size = Ant::getAmount(); i < size; ++i) 
-        ants_[i]->update(alpha);
-
     for (std::size_t i = 0, size = Source::getAmount(); i < size; ++i) 
         sources_[i]->update(alpha);
+    
+    for (std::size_t i = 0, size = Ant::getAmount(); i < size; ++i) {
+        ants_[i]->update(alpha);
+        // if (CollisionManager::CircleCircle(ants_[i]->shape_, sources_[i]->shape_)) {
+        //     ants_[i]->isShouting = true;
+        // }
+    }
 }

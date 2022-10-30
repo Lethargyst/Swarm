@@ -4,6 +4,10 @@
 #include "../Objects/objects.h"
 #include "../Objects/CollisionManager.h"
 
+class Ant;
+class Source;
+class Swarm;
+
 enum ObjectType {
     ANT,
     SOURCE
@@ -11,51 +15,50 @@ enum ObjectType {
 
 class Source : public Object
 {
+    friend Swarm;
 public:
     Source(const vec2& pos, float speed, float size, const vec3& color);
     ~Source();
 
-    virtual const Circle& getShape() const;        
     static int getAmount();
 
     // void spawn(std::vector<Ant*> ants, int num, float speed = 10.0f, float shoutRange = 25.0f);
     virtual void update(const float alpha) override; 
 
-private:
+protected:
     Source(const Source& other) = delete;
     Source& operator=(const Source& other) = delete;
 
-    static int amount; 
-
     Circle shape_;
     vec3 color_;
+
+    static int amount; 
     int ID_;
 };
 
 
 class Ant : public Object
 { 
+    friend Swarm;
 public:
     Ant(const vec2& pos, float shoutRange, float speed,
         float size, const vec3& color);
     ~Ant();
 
-    virtual const Circle& getShape() const;
     static int getAmount();
-    bool isCollideSource(const Source& source);
     virtual void update(const float alpha) override; 
-    // void shout() const; 
+    void shout() const; 
 
-private:
+protected:
     Ant(const Ant& other) = delete;
     Ant& operator=(const Ant& other) = delete;
 
-    static int amount;
-
     Circle shape_;
     Source* source_;
-    
+
     float shoutRange_;
+    static int amount;
+    bool isShouting = false;
     bool movingToTarget_ = false;
 };
 
@@ -71,8 +74,8 @@ public:
 
     void update(const float);
 
-    std::vector<Object*> ants_;
-    std::vector<Object*> sources_;
+    std::vector<Ant*> ants_;
+    std::vector<Source*> sources_;
 private:
     Swarm(const Swarm& other) = delete;
     Swarm& operator=(const Swarm& other) = delete;

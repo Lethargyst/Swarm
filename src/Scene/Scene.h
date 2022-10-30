@@ -42,7 +42,7 @@ private:
 
     std::vector<Renderer::ShaderProgram*> shaders_;
 
-    QuadTree quadTree_;
+    QuadTree::QuadTreeRoot<Ant> quadTree_;
     Swarm swarm;
 
     static float* objectsRenderBuffer;

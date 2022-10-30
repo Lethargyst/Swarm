@@ -16,7 +16,6 @@ Scene& Scene::initialize(Window* window)
     static Scene sceneObj(window);
 
     vec2 resolution = window->getResolution();
-    sceneObj.quadTree_ = QuadTree();
 
     return sceneObj;
 }

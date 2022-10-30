@@ -11,13 +11,13 @@ public:
     Object(const vec2& pos, float speed, float size, const vec3& color);
     virtual ~Object() {};
 
-    virtual const Shape& getShape() const = 0;
     virtual void update(const float alpha);
     
     void changeDirection(const float dir); 
     void setMovementSpread(const float radian);
 
     Rectangle2d bounds_;
+    Shape shape_;
     vec3 color_;
     vec2 pos_;
     float size_;

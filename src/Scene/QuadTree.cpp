@@ -1,5 +1,7 @@
 #include "QuadTree.h"
 
+using namespace QuadTree;
+
 unsigned QuadTreeNode::maxDepth = MAX_DEPTH;
 unsigned QuadTreeNode::maxObjectsPerNode = MAX_OBJECTS_PER_NODE;
 unsigned QuadTreeNode::objectsAmount = 0;
@@ -143,44 +145,4 @@ void QuadTreeNode::clear()
     objectsAmount = 0;
 }
 
-QuadTree::QuadTree()
-{
-    zeroNode_ = new QuadTreeNode(Rectangle2d(0.0f, 0.0f, 1.0f, 1.0f), 0);
-}
 
-void QuadTree::get(const Circle& area, std::vector<Object*>& dest) 
-{
-    zeroNode_->get(area, dest);
-}
-
-void QuadTree::get(const Rectangle2d& area, std::vector<Object*>& dest) 
-{
-    zeroNode_->get(area, dest);
-}
-
-unsigned QuadTree::getLeafsCnt() const
-{
-    return zeroNode_->getLeafsCnt(); 
-}
-
-void QuadTree::insert(Object* object)
-{
-    zeroNode_->insert(std::make_shared<QuadTreeData>(object));
-}
-
-void QuadTree::getLeafs(std::vector<Rectangle2d*>& dest) const
-{
-    zeroNode_->getLeafs(dest);
-}
-
-void QuadTree::update(const std::vector<Object*>& objects)
-{
-    zeroNode_->clear();
-    for (std::size_t i = 0, size = objects.size(); i < size; ++i)
-        zeroNode_->insert(std::make_shared<QuadTreeData>(objects[i]));
-}
-
-void QuadTree::clear()
-{
-    zeroNode_->clear();
-}

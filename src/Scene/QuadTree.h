@@ -11,66 +11,72 @@
 #include "../Render/Window.h"
 #include "../precompiled.h"
 
-struct QuadTreeData
+namespace QuadTree 
 {
-    QuadTreeData(Object* object) : object_(object) {}
-    ~QuadTreeData() {}
+    struct QuadTreeData
+    {
+        QuadTreeData(Object* object) : object_(object) {}
+        ~QuadTreeData() {}
 
-    Object* object_;
-    vec2 pos;
-    ShapeType shapeType;
-};
+        Object* object_;
+        vec2 pos;
+        ShapeType shapeType;
+    };
 
-class QuadTreeNode
-{
-public:
-    QuadTreeNode(const Rectangle2d& bounds, unsigned int depth) 
-        : bounds_(bounds), curDepth_(depth) {}
+    class QuadTreeNode
+    {
+    public:
+        QuadTreeNode(const Rectangle2d& bounds, unsigned int depth) 
+            : bounds_(bounds), curDepth_(depth) {}
 
-    bool isLeaf() const;
-    unsigned getObectsCnt() const;
-    unsigned getLeafsCnt() const;
-    void get(const Circle& area, std::vector<Object*>& dest);
-    void get(const Rectangle2d& area, std::vector<Object*>& dest);
+        bool isLeaf() const;
+        unsigned getObectsCnt() const;
+        unsigned getLeafsCnt() const;
+        void get(const Circle& area, std::vector<Object*>& dest);
+        void get(const Rectangle2d& area, std::vector<Object*>& dest);
 
-    void getLeafs(std::vector<Rectangle2d*>& dest);
-    // insert data into leafs
-    void insert(std::shared_ptr<QuadTreeData> data);
-    // split the leaf in 4 child nodes
-    void split();
-    // clear content in leafs
-    void clear();
+        void getLeafs(std::vector<Rectangle2d*>& dest);
+        // insert data into leafs
+        void insert(std::shared_ptr<QuadTreeData> data);
+        // split the leaf in 4 child nodes
+        void split();
+        // clear content in leafs
+        void clear();
 
-private:
+    private:
 
-    std::vector<std::shared_ptr<QuadTreeNode>> children_;
-    std::vector<std::shared_ptr<QuadTreeData>> content_;
-    
-    Rectangle2d bounds_;
-    static unsigned int maxDepth, maxObjectsPerNode, 
-                        objectsAmount, leafsAmount;
-    unsigned int curDepth_;
-};
+        std::vector<std::shared_ptr<QuadTreeNode>> children_;
+        std::vector<std::shared_ptr<QuadTreeData>> content_;
+        
+        Rectangle2d bounds_;
+        static unsigned int maxDepth, maxObjectsPerNode, 
+                            objectsAmount, leafsAmount;
+        unsigned int curDepth_;
+    };
 
-class QuadTree
-{
-public:
-    QuadTree();
+    template<typename Type>
+    class QuadTreeRoot
+    {
+    public:
+        QuadTreeRoot();
 
-    unsigned getObjectsCnt() const;
-    unsigned getLeafsCnt() const;
-    void get(const Circle& area, std::vector<Object*>& dest);
-    void get(const Rectangle2d& area, std::vector<Object*>& dest);
-    void getLeafs(std::vector<Rectangle2d*>& dest) const;
+        unsigned getObjectsCnt() const;
+        unsigned getLeafsCnt() const;
+        void get(const Circle& area, std::vector<Type*>& dest);
+        void get(const Rectangle2d& area, std::vector<Type*>& dest);
+        void getLeafs(std::vector<Rectangle2d*>& dest) const;
 
-    // insert data into quad tree
-    void insert(Object* object); 
-    // rebuild the quad tree according to array
-    void update(const std::vector<Object*>& objects);
-    void clear();
-private:
-    QuadTreeNode* zeroNode_;
-};
+        // insert data into quad tree
+        void insert(Type* object); 
+        // rebuild the quad tree according to array
+        void update(const std::vector<Type*>& objects);
+        void clear();
+    private:
+        QuadTreeNode* zeroNode_;
+    };
 
+}
+
+#include "QuadTree.tpp"
 
 #endif
