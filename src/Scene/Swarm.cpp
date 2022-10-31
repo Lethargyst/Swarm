@@ -39,7 +39,7 @@ void Ant::update(const float alpha)
 void Swarm::addAnts(int num)
 {
     for (std::size_t i = 0; i < num; ++i) {
-        vec2 pos = vec2(rand() / RAND_MAX);
+        vec2 pos = vec2(rand() / RAND_MAX + 0.5f);
         vec3 color = vec3(255.0f, 255.0f, 255.0f);
         Ant* ant = new Ant(pos, 25.0f, 0.005f, ANT_SIZE, color);
         ants_.push_back(ant);
@@ -49,7 +49,7 @@ void Swarm::addAnts(int num)
 void Swarm::addSources(int num) 
 {
     for (std::size_t i = 0; i < num; ++i) {
-        vec2 pos = vec2(rand() / RAND_MAX);
+        vec2 pos = vec2(rand() / RAND_MAX + 0.5f);
         vec3 color = vec3((int)pos.x % 255, (int)pos.y % 255, (int)rand() % 255);
         sources_.push_back(new Source(pos, 0.005f, SOURCE_SIZE, color));
     }
@@ -68,8 +68,22 @@ void Swarm::update(const float alpha)
     
     for (std::size_t i = 0, size = Ant::getAmount(); i < size; ++i) {
         ants_[i]->update(alpha);
-        // if (CollisionManager::CircleCircle(ants_[i]->shape_, sources_[i]->shape_)) {
-        //     ants_[i]->isShouting = true;
-        // }
+        for (std::size_t j = 0, size = Source::getAmount(); j < size; ++j) {
+            if (CollisionManager::CirclePoint(sources_[j]->shape_, ants_[i]->pos_)) {
+                ants_[i]->isShouting = true;
+            }
+        }
+    }
+}
+
+void Swarm::shout(QuadTree::QuadTreeRoot<Ant>& root)
+{
+    std::vector<Ant*> ants;
+    Circle area;
+    for (std::size_t i = 0, size = ants_.size(); i < size; ++i) {
+        if (ants_[i]->isShouting) {
+            area = ants_[i]->shape_;
+            // std::cout << area.pos_.x << " " << area.pos_.y << "\n";
+        }
     }
 }

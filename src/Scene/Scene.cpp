@@ -133,6 +133,7 @@ void Scene::update(const float alpha)
     updateSwarmRenderInfo();
 
     quadTree_.update(swarm.ants_);
+
     // Updating quad tree rendering data
     if (renderingQuadTree) {
         updateQuadTreeBuffer();

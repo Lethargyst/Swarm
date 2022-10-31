@@ -13,7 +13,7 @@ uniform vec2 resolution;
 void drawCircle(vec2 pos, float size)
 {
     vec2 length = vec2(size) / resolution.xy;
-    int vertNum = int(size);
+    int vertNum = int(size) + 5;
     float alpha = 2 * M_PI / vertNum;
 
     for (int i = 0; i <= vertNum; i += 2)

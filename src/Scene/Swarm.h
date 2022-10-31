@@ -1,8 +1,10 @@
 #ifndef AGENTS_H
 #define AGENTS_H
 
+#include "QuadTree.h"
 #include "../Objects/objects.h"
 #include "../Objects/CollisionManager.h"
+#include <iostream>
 
 class Ant;
 class Source;
@@ -73,6 +75,7 @@ public:
     void addSources(int num); 
 
     void update(const float);
+    void shout(QuadTree::QuadTreeRoot<Ant>& root);
 
     std::vector<Ant*> ants_;
     std::vector<Source*> sources_;

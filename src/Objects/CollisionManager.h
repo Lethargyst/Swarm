@@ -1,7 +1,6 @@
 #ifndef COLLISION_MANAGER
 #define COLLISION_MANAGER
 
-#include <stdio.h>
 #include "../Math/Vectors.h"
 #include "Geometry2D.h"
 

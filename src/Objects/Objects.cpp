@@ -25,7 +25,7 @@ void Object::setMovementSpread(const float radian) { movementSpread_ = radian; }
 
 void Object::update(const float alpha)
 {
-      if (movingRandomly_) {
+    if (movingRandomly_) {
         this->changeDirection((rand() % 628) / 100.0f);
     } else {
         directionMat_.setRotation((direction_ + movementSpread_) * alpha);

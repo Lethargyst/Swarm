@@ -9,7 +9,7 @@ uniform vec2 resolution;
 
 void main()
 {
-    gl_PointSize = size;
+    gl_PointSize = size * resolution.x;
     vec2 pos = vec2(inPos.x * 2.0 - 1.0, inPos.y * 2.0 - 1.0);
     gl_Position = vec4(pos, 0.0, 1.0);
     vColor = inColor;
