@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
         if (deltaTime >= MAX_PERIOD) {
             lastTime = time;
             alpha += 0.001f;
-            scene.update(alpha);
+            scene.update(1.0f);
             scene.render();
         }
     }

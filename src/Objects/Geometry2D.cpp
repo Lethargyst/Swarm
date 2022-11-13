@@ -2,12 +2,12 @@
 
 float Line2d::length() const
 {
-    return distance(start_, end_);
+    return Distance(start_, end_);
 }
 
 float Line2d::lengthSq() const
 {
-    return distanceSq(start_, end_);
+    return DistanceSq(start_, end_);
 }
 
 vec2 Rectangle2d::getMin() const

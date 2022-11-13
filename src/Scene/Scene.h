@@ -47,6 +47,7 @@ private:
 
     static float* objectsRenderBuffer;
     static float* quadTreeRenderBuffer;
+    static float* shoutLinesRenderBuffer;
     
     Window* window_;
     GLuint *VAO_, *VBO_; 

@@ -99,34 +99,34 @@ vec3 operator*(const vec3& l, const vec3& r) { return vec3(l.x * r.x, l.y * r.y,
 vec3 operator*(const vec3& l, const float r) { return vec3(l.x + r, l.y + r, l.z + r); }
 vec3 operator*(const float l, const vec3& r) { return r * l; }
 
-vec2 normalized(const vec2& vec) { return vec * (1.0f / vec.length()); }
-vec3 normalized(const vec3& vec) { return vec * (1.0f / vec.length()); }
+vec2 Normalized(const vec2& vec) { return vec * (1.0f / vec.length()); }
+vec3 Normalized(const vec3& vec) { return vec * (1.0f / vec.length()); }
 
-void normalize(vec2& vec) { vec = vec * (1.0f / vec.length()); }
-void normalize(vec3& vec) { vec = vec * (1.0f / vec.length()); }
+void Normalize(vec2& vec) { vec = vec * (1.0f / vec.length()); }
+void Normalize(vec3& vec) { vec = vec * (1.0f / vec.length()); }
 
-float dot(const vec2& l, const vec2& r) { return l.x * r.x + l.y * r.y; }
-float dot(const vec3& l, const vec3& r) { return l.x * r.x + l.y * r.y + l.z * r.z; }
+float Dot(const vec2& l, const vec2& r) { return l.x * r.x + l.y * r.y; }
+float Dot(const vec3& l, const vec3& r) { return l.x * r.x + l.y * r.y + l.z * r.z; }
 
-float distance(const vec2& l, const vec2& r)
+float Distance(const vec2& l, const vec2& r)
 {
     vec2 tmp = l - r;
     return tmp.length();
 }
 
-float distanceSq(const vec2& l, const vec2& r)
+float DistanceSq(const vec2& l, const vec2& r)
 {
     vec2 tmp = l - r;
     return tmp.lengthSq();
 }
 
-float distance(const vec3& l, const vec3& r)
+float Distance(const vec3& l, const vec3& r)
 {
     vec3 tmp = l - r;
     return tmp.length();
 }
 
-float distanceSq(const vec3& l, const vec3& r)
+float DistanceSq(const vec3& l, const vec3& r)
 {
     vec3 tmp = l - r;
     return tmp.lengthSq();

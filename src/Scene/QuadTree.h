@@ -13,16 +13,17 @@
 
 namespace QuadTree 
 {
+    template<typename Type>
     struct QuadTreeData
     {
-        QuadTreeData(Object* object) : object_(object) {}
+        QuadTreeData(Type* object) : object_(object) {}
         ~QuadTreeData() {}
 
-        Object* object_;
+        Type* object_;
         vec2 pos;
-        ShapeType shapeType;
     };
 
+    template<typename Type>
     class QuadTreeNode
     {
     public:
@@ -32,12 +33,12 @@ namespace QuadTree
         bool isLeaf() const;
         unsigned getObectsCnt() const;
         unsigned getLeafsCnt() const;
-        void get(const Circle& area, std::vector<Object*>& dest);
-        void get(const Rectangle2d& area, std::vector<Object*>& dest);
+        void get(const Circle& area, std::vector<Type*>& dest);
+        void get(const Rectangle2d& area, std::vector<Type*>& dest);
 
         void getLeafs(std::vector<Rectangle2d*>& dest);
         // insert data into leafs
-        void insert(std::shared_ptr<QuadTreeData> data);
+        void insert(std::shared_ptr<QuadTreeData<Type>> data);
         // split the leaf in 4 child nodes
         void split();
         // clear content in leafs
@@ -46,12 +47,12 @@ namespace QuadTree
     private:
 
         std::vector<std::shared_ptr<QuadTreeNode>> children_;
-        std::vector<std::shared_ptr<QuadTreeData>> content_;
+        std::vector<std::shared_ptr<QuadTreeData<Type>>> content_;
         
         Rectangle2d bounds_;
-        static unsigned int maxDepth, maxObjectsPerNode, 
+        static unsigned maxDepth, maxObjectsPerNode, 
                             objectsAmount, leafsAmount;
-        unsigned int curDepth_;
+        unsigned curDepth_;
     };
 
     template<typename Type>
@@ -72,7 +73,7 @@ namespace QuadTree
         void update(const std::vector<Type*>& objects);
         void clear();
     private:
-        QuadTreeNode* zeroNode_;
+        QuadTreeNode<Type>* zeroNode_;
     };
 
 }

@@ -54,19 +54,19 @@ vec3 operator*(const vec3& l, const vec3& r);
 vec3 operator*(const vec3& l, const float r);
 vec3 operator*(const float l, const vec3& r);
 
-vec2 normalized(const vec2& vec);
-vec3 normalized(const vec3& vec);
+vec2 Normalized(const vec2& vec);
+vec3 Normalized(const vec3& vec);
 
-void normalize(vec2& vec);
-void normalize(vec3& vec);
+void Normalize(vec2& vec);
+void Normalize(vec3& vec);
 
-float dot(const vec2& l, const vec2& r);
-float dot(const vec3& l, const vec3& r);
+float Dot(const vec2& l, const vec2& r);
+float Dot(const vec3& l, const vec3& r);
 
-float distance(const vec2& l, const vec2& r);
-float distanceSq(const vec2& l, const vec2& r);
-float distance(const vec3& l, const vec3& r);
-float distanceSq(const vec3& l, const vec3& r);
+float Distance(const vec2& l, const vec2& r);
+float DistanceSq(const vec2& l, const vec2& r);
+float Distance(const vec3& l, const vec3& r);
+float DistanceSq(const vec3& l, const vec3& r);
 
 
 #endif

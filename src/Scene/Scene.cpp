@@ -2,6 +2,7 @@
 
 float* Scene::objectsRenderBuffer = new float[RENDER_BUFFER_SIZE];
 float* Scene::quadTreeRenderBuffer = new float[QUAD_TREE_BUFFER_SIZE];
+float* Scene::shoutLinesRenderBuffer = new float[SHOUT_LINES_BUFFER_SIZE];
 
 Scene::~Scene() 
 { 
@@ -43,6 +44,14 @@ void Scene::initBuffers()
     glBindVertexArray(VAO_[1]);
     glBindBuffer(GL_ARRAY_BUFFER, VBO_[1]);
     glBufferData(GL_ARRAY_BUFFER, QUAD_TREE_BUFFER_SIZE, quadTreeRenderBuffer, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    // shoutlines render buffer: [..., pos.x, pos.y, pos.x, pos.y, ...]
+    glBindVertexArray(VAO_[2]);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_[2]);
+    glBufferData(GL_ARRAY_BUFFER, SHOUT_LINES_BUFFER_SIZE, shoutLinesRenderBuffer, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
@@ -133,6 +142,7 @@ void Scene::update(const float alpha)
     updateSwarmRenderInfo();
 
     quadTree_.update(swarm.ants_);
+    swarm.shout(quadTree_);
 
     // Updating quad tree rendering data
     if (renderingQuadTree) {
@@ -190,13 +200,13 @@ void Scene::processInput()
 
     vec2 velocity;
     if (glfwGetKey(window_->glWindow_, GLFW_KEY_UP) == GLFW_PRESS)
-        velocity = {0.0f, 0.05f};
+        velocity = {0.0f, 0.01f};
     if (glfwGetKey(window_->glWindow_, GLFW_KEY_RIGHT) == GLFW_PRESS)
-        velocity = {0.05f, 0.0f};
+        velocity = {0.01f, 0.0f};
     if (glfwGetKey(window_->glWindow_, GLFW_KEY_DOWN) == GLFW_PRESS)
-        velocity = {0.0f, -0.05f};
+        velocity = {0.0f, -0.01f};
     if (glfwGetKey(window_->glWindow_, GLFW_KEY_LEFT) == GLFW_PRESS)
-        velocity = {-0.05f, 0.0f};
+        velocity = {-0.01f, 0.0f};
 
     for (std::size_t i = 0, size = swarm.ants_.size(); i < size; ++i)
         swarm.ants_[i]->pos_ += velocity;

@@ -34,7 +34,6 @@ add_executable( ${PROJECT_NAME}
     src/Render/Window.cpp    
 
     src/Scene/QuadTree.h
-    src/Scene/QuadTree.cpp
     src/Scene/QuadTree.tpp
 
     src/Scene/Scene.h

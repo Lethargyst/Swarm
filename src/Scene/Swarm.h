@@ -19,7 +19,8 @@ class Source : public Object
 {
     friend Swarm;
 public:
-    Source(const vec2& pos, float speed, float size, const vec3& color);
+    Source(const vec2& pos, float speed, float size, 
+           const vec3& color, int ID);
     ~Source();
 
     static int getAmount();
@@ -55,13 +56,18 @@ protected:
     Ant(const Ant& other) = delete;
     Ant& operator=(const Ant& other) = delete;
 
-    Circle shape_;
+    void moveToTarget(Ant* taget);
+    void setShoutBy(Ant* trigger);    
+
+    Circle shape_, shoutArea_;
     Source* source_;
 
     float shoutRange_;
     static int amount;
-    bool isShouting = false;
-    bool movingToTarget_ = false;
+    int shoutQueue_ = 0;
+    int sourceVisited_ = 0;
+    int shoutAbout_ = 0;
+    bool isShouting_ = false;
 };
 
 class Swarm

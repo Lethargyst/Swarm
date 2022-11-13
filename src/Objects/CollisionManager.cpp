@@ -2,7 +2,7 @@
 
 bool CollisionManager::CircleCircle(const Circle& a, const Circle& b)
 {
-    return distanceSq(a.pos_, b.pos_) <= (a.radius_ + b.radius_) * (a.radius_ + b.radius_);
+    return DistanceSq(a.pos_, b.pos_) <= (a.radius_ + b.radius_) * (a.radius_ + b.radius_);
 }
 
 bool CollisionManager::CircleRect(const Circle& circle, const Rectangle2d& rect)
@@ -13,7 +13,7 @@ bool CollisionManager::CircleRect(const Circle& circle, const Rectangle2d& rect)
     Point2d closestPoint(clamp(circle.pos_.x, min.x, max.x),
                          clamp(circle.pos_.y, min.y, max.y));
     
-    return distanceSq(circle.pos_, closestPoint) <= circle.radius_ * circle.radius_;
+    return DistanceSq(circle.pos_, closestPoint) <= circle.radius_ * circle.radius_;
 }
 
 bool CollisionManager::RectCircle(const Rectangle2d& rect, const Circle& circle)
@@ -23,7 +23,7 @@ bool CollisionManager::RectCircle(const Rectangle2d& rect, const Circle& circle)
 
 bool CollisionManager::CirclePoint(const Circle& circle, const Point2d& point)
 {
-    return distanceSq(circle.pos_, point) <= circle.radius_ * circle.radius_;
+    return DistanceSq(circle.pos_, point) <= circle.radius_ * circle.radius_;
 }
 
 bool CollisionManager::PointCircle(const Point2d& point, const Circle& circle)
