@@ -1,5 +1,5 @@
 #ifndef SCENE_H
-#define SCENE_H
+#define SCENE_H         
 
 #include <glad/glad.h>
 #include <vector>

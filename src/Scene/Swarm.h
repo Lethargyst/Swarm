@@ -2,7 +2,7 @@
 #define AGENTS_H
 
 #include "QuadTree.h"
-#include "../Objects/objects.h"
+#include "../Objects/Objects.h"
 #include "../Objects/CollisionManager.h"
 #include <iostream>
 

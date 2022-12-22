@@ -7,7 +7,7 @@
 #include <memory>
 #include "../Objects/CollisionManager.h"
 #include "../Objects/Objects.h"
-#include "../Objects/Geometry2d.h"
+#include "../Objects/Geometry2D.h"
 #include "../Render/Window.h"
 #include "../precompiled.h"
 
