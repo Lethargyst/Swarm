@@ -2,21 +2,18 @@
 
 float* Scene::objectsRenderBuffer = new float[RENDER_BUFFER_SIZE];
 float* Scene::quadTreeRenderBuffer = new float[QUAD_TREE_BUFFER_SIZE];
-float* Scene::shoutLinesRenderBuffer = new float[SHOUT_LINES_BUFFER_SIZE];
 
 Scene::~Scene() 
 { 
     if (objectsRenderBuffer) delete[] objectsRenderBuffer; 
     if (VAO_) delete[] VAO_;
     if (VBO_) delete[] VBO_;
-    if (window_) delete window_;
 }
 
 Scene& Scene::initialize(Window* window)
 {
     static Scene sceneObj(window);
-
-    vec2 resolution = window->getResolution();
+    sceneObj.initBuffers();
 
     return sceneObj;
 }
@@ -24,10 +21,10 @@ Scene& Scene::initialize(Window* window)
 void Scene::initBuffers()
 {
     loadShaders();
-    VAO_ = new GLuint[2];
-    VBO_ = new GLuint[2];
-    glGenVertexArrays(2, VAO_); 
-    glGenBuffers(2, VBO_);
+    VAO_ = new GLuint[3];
+    VBO_ = new GLuint[3];
+    glGenVertexArrays(3, VAO_); 
+    glGenBuffers(3, VBO_);
 
     // objects are represented in objects render buffer as follows:
     // [..., pos.x, pos.y, size, color.x, color.y, color.z, ...] 
@@ -48,14 +45,12 @@ void Scene::initBuffers()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    // shoutlines render buffer: [..., pos.x, pos.y, pos.x, pos.y, ...]
+    // shoutlines render buffer: [..., pos.x, pos.y, ...]
     glBindVertexArray(VAO_[2]);
     glBindBuffer(GL_ARRAY_BUFFER, VBO_[2]);
-    glBufferData(GL_ARRAY_BUFFER, SHOUT_LINES_BUFFER_SIZE, shoutLinesRenderBuffer, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+    glBufferData(GL_ARRAY_BUFFER, SHOUT_LINES_BUFFER_SIZE, swarm.shoutLinesRenderBuffer, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-    glEnableVertexAttribArray(1);
 }
 
 void Scene::loadShaders()
@@ -65,8 +60,8 @@ void Scene::loadShaders()
     // Objects shader
     std::string objectsVertexShaderSource, objectsFragmentShaderSource, objectsGeometryShaderSource;
     loadSource("../src/Render/Shaders/Objects/VertexShader.vert", objectsVertexShaderSource);
-    loadSource("../src/Render/Shaders/Objects/FragmentShader.frag", objectsFragmentShaderSource);
     loadSource("../src/Render/Shaders/Objects/GeometryShader.geom", objectsGeometryShaderSource);
+    loadSource("../src/Render/Shaders/Objects/FragmentShader.frag", objectsFragmentShaderSource);
 
     ShaderProgram *objectShader = new ShaderProgram;
     objectShader->compileShader(objectsVertexShaderSource, GL_VERTEX_SHADER);
@@ -78,8 +73,8 @@ void Scene::loadShaders()
     // Quad tree shader
     std::string quadTreeVertexShaderSource, quadTreeFragmentShaderSource, quadTreeGeometryShaderSource;
     loadSource("../src/Render/Shaders/QuadTree/VertexShader.vert", quadTreeVertexShaderSource);
-    loadSource("../src/Render/Shaders/QuadTree/FragmentShader.frag", quadTreeFragmentShaderSource);
     loadSource("../src/Render/Shaders/QuadTree/GeometryShader.geom", quadTreeGeometryShaderSource);
+    loadSource("../src/Render/Shaders/QuadTree/FragmentShader.frag", quadTreeFragmentShaderSource);
 
     ShaderProgram *quadTreeShader = new ShaderProgram;
     quadTreeShader->compileShader(quadTreeVertexShaderSource, GL_VERTEX_SHADER);
@@ -87,6 +82,17 @@ void Scene::loadShaders()
     quadTreeShader->compileShader(quadTreeGeometryShaderSource, GL_GEOMETRY_SHADER);
     quadTreeShader->linkShaders();
     shaders_.push_back(quadTreeShader);
+
+    // Shoutlines shader
+    std::string shoutLinesVertexShaderSource, shoutLinesFragmentShaderSource;
+    loadSource("../src/Render/Shaders/ShoutLines/VertexShader.vert", shoutLinesVertexShaderSource);
+    loadSource("../src/Render/Shaders/ShoutLines/FragmentShader.frag", shoutLinesFragmentShaderSource);
+
+    ShaderProgram *shoutLinesShader = new ShaderProgram;
+    shoutLinesShader->compileShader(shoutLinesVertexShaderSource, GL_VERTEX_SHADER);
+    shoutLinesShader->compileShader(shoutLinesFragmentShaderSource, GL_FRAGMENT_SHADER);
+    shoutLinesShader->linkShaders();
+    shaders_.push_back(shoutLinesShader);    
 }
 
 void Scene::initSwarm(int antsNum, int sourcesNum)
@@ -171,7 +177,7 @@ void Scene::render() const
     glBufferSubData(GL_ARRAY_BUFFER, 0, objectsAmount_ * 6 * sizeof(float), objectsRenderBuffer);
 
     glBindVertexArray(VAO_[0]);
-    glDrawArrays(GL_POINTS, 0, objectsAmount_);
+    glDrawArrays(GL_POINTS, 0, objectsAmount_); 
  
     if (renderingQuadTree) {
         shaders_[1]->use();
@@ -186,6 +192,16 @@ void Scene::render() const
         glDrawArrays(GL_POINTS, 0, quadTree_.getLeafsCnt());
     }
 
+    if (renderingShoutLines) {
+        shaders_[2]->use();
+        
+        glBindBuffer(GL_ARRAY_BUFFER, VBO_[2]);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, swarm.getShoutLinesCnt() * 4 * sizeof(float), swarm.shoutLinesRenderBuffer);
+
+        glBindVertexArray(VAO_[2]);
+        glDrawArrays(GL_LINES, 0, swarm.getShoutLinesCnt() * 4);
+    }
+
     glfwSwapBuffers(window_->glWindow_);
     glfwPollEvents();
 }
@@ -197,6 +213,9 @@ void Scene::processInput()
 
     if (glfwGetKey(window_->glWindow_, GLFW_KEY_SPACE) == GLFW_PRESS)
         renderingQuadTree = !renderingQuadTree;
+
+    if (glfwGetKey(window_->glWindow_, GLFW_KEY_Z) == GLFW_PRESS)
+        renderingShoutLines = !renderingShoutLines;
 
     vec2 velocity;
     if (glfwGetKey(window_->glWindow_, GLFW_KEY_UP) == GLFW_PRESS)

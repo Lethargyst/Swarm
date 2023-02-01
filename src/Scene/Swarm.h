@@ -1,19 +1,14 @@
 #ifndef AGENTS_H
 #define AGENTS_H
 
+#include "../precompiled.h"
 #include "QuadTree.h"
 #include "../Objects/Objects.h"
 #include "../Objects/CollisionManager.h"
-#include <iostream>
 
 class Ant;
 class Source;
 class Swarm;
-
-enum ObjectType {
-    ANT,
-    SOURCE
-};
 
 class Source : public Object
 {
@@ -50,24 +45,29 @@ public:
 
     static int getAmount();
     virtual void update(const float alpha) override; 
-    void shout() const; 
+    void shout(QuadTree::QuadTreeRoot<Ant>& root, float* shoutLinesRenderBuffer,
+               std::size_t& shoutLinesCnt) const; 
 
 protected:
     Ant(const Ant& other) = delete;
     Ant& operator=(const Ant& other) = delete;
 
-    void moveToTarget(Ant* taget);
-    void setShoutBy(Ant* trigger);    
+    void changeShoutStatusBy(const Ant* other);
+    void moveTo(const Ant* other);
+    bool shouldChangeWayTo(const Ant* other);
+    bool shouldChangeShoutStatusBy(const Ant* other);
 
     Circle shape_, shoutArea_;
     Source* source_;
 
     float shoutRange_;
-    static int amount;
-    int shoutQueue_ = 0;
-    int sourceVisited_ = 0;
-    int shoutAbout_ = 0;
+    float distanceToTarget_;    
+    float distanceToShoutTarget_;
+    int targetID_ = 0;
+    int shoutTargetID_ = 0;
     bool isShouting_ = false;
+    
+    static int amount;
 };
 
 class Swarm
@@ -83,11 +83,17 @@ public:
     void update(const float);
     void shout(QuadTree::QuadTreeRoot<Ant>& root);
 
+    std::size_t getShoutLinesCnt() const;
+
     std::vector<Ant*> ants_;
     std::vector<Source*> sources_;
+
+    static float* shoutLinesRenderBuffer;
 private:
     Swarm(const Swarm& other) = delete;
     Swarm& operator=(const Swarm& other) = delete;
+
+    std::size_t shoutLinesCnt = 0;
 };
 
 #endif

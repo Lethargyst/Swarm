@@ -50,8 +50,9 @@ set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 
 set(CMAKE_CXX_FLAGS_DEBUG_INIT "-Wall")
 
+add_subdirectory(external/glad)
+target_link_libraries(${PROJECT_NAME} glad)
+
 add_subdirectory(external/glfw)
 target_link_libraries(${PROJECT_NAME} glfw)
 
-add_subdirectory(external/glad)
-target_link_libraries(${PROJECT_NAME} glad)

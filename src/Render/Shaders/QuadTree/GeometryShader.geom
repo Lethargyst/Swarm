@@ -1,4 +1,4 @@
-#version 460
+#version 330
 
 layout (points) in;
 layout (line_strip, max_vertices = 10) out;

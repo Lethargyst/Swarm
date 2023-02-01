@@ -16,9 +16,8 @@ int main(int argc, char* argv[])
     }
 
     Scene& scene = Scene::initialize(&window);
-    scene.initBuffers();
     
-    int antsNum = 1000;
+    int antsNum;
     sscanf(argv[1], "%i", &antsNum);
     scene.initSwarm(antsNum, 2);
 

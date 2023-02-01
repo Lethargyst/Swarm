@@ -1,4 +1,4 @@
-#version 460
+#version 330
 layout (location = 0) in vec2 inPos;  
 layout (location = 1) in float size;
 layout (location = 2) in vec3 inColor;
