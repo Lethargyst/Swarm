@@ -20,7 +20,6 @@ public:
 
     static int getAmount();
 
-    // void spawn(std::vector<Ant*> ants, int num, float speed = 10.0f, float shoutRange = 25.0f);
     virtual void update(const float alpha) override; 
 
 protected:
@@ -53,19 +52,20 @@ protected:
     Ant& operator=(const Ant& other) = delete;
 
     void changeShoutStatusBy(const Ant* other);
+    bool changeConditionOf(Ant* other) const;
     void moveTo(const Ant* other);
-    bool shouldChangeWayTo(const Ant* other);
+    bool isAbleToListen(const Ant* speaker) const;
     bool shouldChangeShoutStatusBy(const Ant* other);
 
     Circle shape_, shoutArea_;
     Source* source_;
 
     float shoutRange_;
-    float distanceToTarget_;    
-    float distanceToShoutTarget_;
-    int targetID_ = 0;
-    int shoutTargetID_ = 0;
-    bool isShouting_ = false;
+    float distanceToEven_ = 100.0f;
+    float distanceToOdd_ = 100.0f;
+    int timeToShout_;
+    bool changedStatus = false;
+    bool isMovingToEven_;
     
     static int amount;
 };

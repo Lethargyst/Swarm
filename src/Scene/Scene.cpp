@@ -199,7 +199,7 @@ void Scene::render() const
         glBufferSubData(GL_ARRAY_BUFFER, 0, swarm.getShoutLinesCnt() * 4 * sizeof(float), swarm.shoutLinesRenderBuffer);
 
         glBindVertexArray(VAO_[2]);
-        glDrawArrays(GL_LINES, 0, swarm.getShoutLinesCnt() * 4);
+        glDrawArrays(GL_LINES, 0, swarm.getShoutLinesCnt() * 2);
     }
 
     glfwSwapBuffers(window_->glWindow_);
@@ -229,4 +229,6 @@ void Scene::processInput()
 
     for (std::size_t i = 0, size = swarm.ants_.size(); i < size; ++i)
         swarm.ants_[i]->pos_ += velocity;
+    for (std::size_t i = 0, size = swarm.sources_.size(); i < size; ++i)
+        swarm.sources_[i]->pos_ += velocity;
 }

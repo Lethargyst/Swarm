@@ -25,7 +25,7 @@ protected:
     mat2 directionMat_;
     vec2 velocity_, speedVec_;
     float speed_, direction_;
-    float movementSpread_ = deg2rad(MOVEMENT_SPREAD);
+    int movementSpread_ = MOVEMENT_SPREAD;
     bool movingRandomly_ = true;
 };
 
