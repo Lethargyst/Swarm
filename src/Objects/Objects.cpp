@@ -31,5 +31,4 @@ void Object::update(const float alpha)
 
     velocity_ = speedVec_ * directionMat_ * alpha;
     pos_ += velocity_;
-    bounds_.origin_ += velocity_;
 }

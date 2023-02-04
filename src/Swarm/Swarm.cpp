@@ -11,7 +11,6 @@ Source::Source(const vec2 &pos, float speed, float size,
                const vec3 &color, int ID)
     : Object(pos, speed, size, color)
 {
-    bounds_ = Rectangle2d(pos - vec2(size / 2), vec2(size));
     shape_ = Circle(pos, size);
     ID_ = ID;
     amount++;
@@ -28,7 +27,6 @@ void Source::update(const float alpha)
 Ant::Ant(const vec2 &pos, float shoutRange, float speed, float size, const vec3 &color)
     : shoutRange_(shoutRange), Object(pos, speed, size, color)
 {
-    bounds_ = Rectangle2d(pos - vec2(size / 2), vec2(size));
     shape_ = Circle(pos, size);
     shoutArea_ = Circle(pos, shoutRange_);
     amount++;
@@ -121,8 +119,8 @@ void Ant::update(const float alpha)
 void Swarm::addAnts(int num)
 {
     for (std::size_t i = 0; i < num; ++i) {
-        vec2 pos = vec2(rand() / (float)RAND_MAX, rand() / (float)RAND_MAX);
-        vec3 color = vec3(255.0f, 255.0f, 255.0f);
+        vec2 pos = vec2(Random::getNormalizedFloat(), Random::getNormalizedFloat());
+        vec3 color = vec3(0.0f, 0.0f, 0.0f);
         Ant *ant = new Ant(pos, SHOUT_RANGE, SPEED, ANT_SIZE, color);
         ants_.push_back(ant);
     }
@@ -130,21 +128,12 @@ void Swarm::addAnts(int num)
 
 void Swarm::addSources(int num)
 {
-    // for (std::size_t i = 0; i < num; ++i) {
-    //     vec2 pos = vec2(rand() / (float)RAND_MAX, rand() / (float)RAND_MAX);
-    //     vec3 color = vec3((int)pos.x % 255, (int)pos.y % 255, (int)rand() % 255);
-    //     sources_.push_back(new Source(pos, 0.005f, SOURCE_SIZE,
-    //                                   color, Source::getAmount() + 1));
-    // }
-    vec2 pos = vec2(0.25f, 0.5f);
-    vec3 color = vec3((int)pos.x % 255, (int)pos.y % 255, (int)rand() % 255);
-    sources_.push_back(new Source(pos, 0.0f, SOURCE_SIZE,
-                                    color, Source::getAmount() + 1));
-
-    pos = vec2(0.75f, 0.5f);
-    color = vec3((int)pos.x % 255, (int)pos.y % 255, (int)rand() % 255);
-    sources_.push_back(new Source(pos, 0.0f, SOURCE_SIZE,
-                                    color, Source::getAmount() + 1));
+    for (std::size_t i = 0; i < num; ++i) {
+        vec2 pos = vec2(Random::getNormalizedFloat(), Random::getNormalizedFloat());
+        vec3 color = vec3(0, 0, 0);
+        sources_.push_back(new Source(pos, SOURCES_SPEED, SOURCE_SIZE,
+                                      color, Source::getAmount() + 1));
+    }
 }
 
 std::size_t Swarm::getShoutLinesCnt() const

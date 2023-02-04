@@ -163,7 +163,8 @@ void Scene::render() const
     shaders_[0]->use();
 
     // Clearing the monitor
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.9f, 0.9f, 0.98f, 1.0f);
+
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Sending resolution value to the graphics shader
@@ -216,19 +217,4 @@ void Scene::processInput()
 
     if (glfwGetKey(window_->glWindow_, GLFW_KEY_Z) == GLFW_PRESS)
         renderingShoutLines = !renderingShoutLines;
-
-    vec2 velocity;
-    if (glfwGetKey(window_->glWindow_, GLFW_KEY_UP) == GLFW_PRESS)
-        velocity = {0.0f, 0.01f};
-    if (glfwGetKey(window_->glWindow_, GLFW_KEY_RIGHT) == GLFW_PRESS)
-        velocity = {0.01f, 0.0f};
-    if (glfwGetKey(window_->glWindow_, GLFW_KEY_DOWN) == GLFW_PRESS)
-        velocity = {0.0f, -0.01f};
-    if (glfwGetKey(window_->glWindow_, GLFW_KEY_LEFT) == GLFW_PRESS)
-        velocity = {-0.01f, 0.0f};
-
-    for (std::size_t i = 0, size = swarm.ants_.size(); i < size; ++i)
-        swarm.ants_[i]->pos_ += velocity;
-    for (std::size_t i = 0, size = swarm.sources_.size(); i < size; ++i)
-        swarm.sources_[i]->pos_ += velocity;
 }

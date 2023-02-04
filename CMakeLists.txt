@@ -15,9 +15,11 @@ add_executable( ${PROJECT_NAME}
     src/Math/Matrices.h
     src/Math/Matrices.cpp
     
+    src/Math/Random.h
+
     src/Math/Vectors.h
     src/Math/Vectors.cpp
-
+    
     src/Objects/CollisionManager.h
     src/Objects/CollisionManager.cpp
     
@@ -39,8 +41,8 @@ add_executable( ${PROJECT_NAME}
     src/Scene/Scene.h
     src/Scene/Scene.cpp
 
-    src/Scene/Swarm.h
-    src/Scene/Swarm.cpp
+    src/Swarm/Swarm.h
+    src/Swarm/Swarm.cpp
 )
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)

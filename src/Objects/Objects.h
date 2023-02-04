@@ -16,7 +16,7 @@ public:
     void changeDirection(const float dir); 
     void setMovementSpread(const float radian);
 
-    Rectangle2d bounds_;
+    // Rectangle2d bounds_;
     Shape shape_;
     vec3 color_;
     vec2 pos_;

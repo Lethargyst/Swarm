@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 #include <vector>
 #include "../precompiled.h"
-#include "../Scene/Swarm.h"
+#include "../Swarm/Swarm.h"
 #include "../Render/ShaderProgram.h"
 #include "../Render/Window.h"
 #include "QuadTree.h"

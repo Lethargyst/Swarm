@@ -7,7 +7,7 @@
 int main(int argc, char* argv[])
 {
     Renderer::initGLFW(4, 6);
-    Window window(800, 600, "Test");
+    Window window(800, 600, "Swarm");
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {

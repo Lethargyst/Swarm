@@ -2,9 +2,10 @@
 #define AGENTS_H
 
 #include "../precompiled.h"
-#include "QuadTree.h"
+#include "../Math/Random.h"
 #include "../Objects/Objects.h"
 #include "../Objects/CollisionManager.h"
+#include "../Scene/QuadTree.h"
 
 class Ant;
 class Source;
