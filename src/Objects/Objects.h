@@ -2,6 +2,7 @@
 #define OBJECTS_H
 
 #include <vector>
+#include "../Math/Random.h"
 #include "../precompiled.h"
 #include "Geometry2D.h"
 
@@ -26,6 +27,7 @@ protected:
     vec2 velocity_, speedVec_;
     float speed_, direction_;
     int movementSpread_ = MOVEMENT_SPREAD;
+    int timer = 0;
     bool movingRandomly_ = true;
 };
 

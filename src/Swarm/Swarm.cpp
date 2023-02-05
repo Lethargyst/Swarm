@@ -107,7 +107,7 @@ bool Ant::changeConditionOf(Ant* target) const
 
 void Ant::update(const float alpha)
 {
-    direction_ += deg2rad(rand() % movementSpread_);
+    direction_ += deg2rad(rand() % movementSpread_ - movementSpread_ / 2);
     changeDirection(direction_);
     Object::update(alpha);
     distanceToEven_ += speed_ * alpha;

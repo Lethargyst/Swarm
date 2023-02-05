@@ -25,10 +25,12 @@ void Object::setMovementSpread(const float radian) { movementSpread_ = radian; }
 
 void Object::update(const float alpha)
 {
-    if (movingRandomly_) {
-        this->changeDirection((rand() % 628) / 100.0f);
+    if (movingRandomly_ && timer == TIME_TO_SPREAD_DIR) {
+        this->changeDirection(Random::getNormalizedFloat() * 6.28f);
+        timer = 0;
     }
 
     velocity_ = speedVec_ * directionMat_ * alpha;
     pos_ += velocity_;
+    timer++;
 }
