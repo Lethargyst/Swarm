@@ -1,8 +1,8 @@
-#ifndef COLLISION_MANAGER
-#define COLLISION_MANAGER
+#ifndef COLLISION_MANAGER_HPP
+#define COLLISION_MANAGER_HPP
 
-#include "../Math/Vectors.h"
-#include "Geometry2D.h"
+#include "../Math/Vectors.hpp"
+#include "Geometry2D.hpp"
 
 namespace CollisionManager 
 {

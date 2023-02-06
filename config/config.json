@@ -1,0 +1,28 @@
+{
+    "renderer": {
+        "render_buffer_size": 50000000,
+        "quad_tree_buffer_size": 1000000,
+        "shout_lines_buffer_size": 1000000000
+    },
+
+    "swarm": {
+        "movement_spread": 10,
+        "speed": 0.003,
+        "source_speed": 0.0,
+        "source_size": 0.03,
+        "ant_size": 0.005,
+        "shout_range": 0.02,
+        "time_to_shout": 1,
+        "time_to_spread_dir": 5
+    },
+
+    "quad_tree": {
+        "max_objects_per_node": 100,
+        "max_depth": 6
+    },
+
+    "max_fps": 60,
+    "epsilon": 0.01,
+    "ants_amount": 10000,
+    "sources_amount": 2
+}   

@@ -1,13 +1,13 @@
-#ifndef SCENE_H
-#define SCENE_H         
+#ifndef SCENE_HPP
+#define SCENE_HPP         
 
 #include <glad/glad.h>
 #include <vector>
-#include "../precompiled.h"
-#include "../Swarm/Swarm.h"
-#include "../Render/ShaderProgram.h"
-#include "../Render/Window.h"
-#include "QuadTree.h"
+#include "../Config/Config.hpp"
+#include "../Swarm/Swarm.hpp"
+#include "../Render/ShaderProgram.hpp"
+#include "../Render/Window.hpp"
+#include "QuadTree.hpp"
 
 class Scene
 {

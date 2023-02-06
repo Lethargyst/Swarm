@@ -1,11 +1,11 @@
-#ifndef AGENTS_H
-#define AGENTS_H
+#ifndef SWARM_HPP
+#define SWARM_HPP
 
-#include "../precompiled.h"
-#include "../Math/Random.h"
-#include "../Objects/Objects.h"
-#include "../Objects/CollisionManager.h"
-#include "../Scene/QuadTree.h"
+#include "../Math/Random.hpp"
+#include "../Objects/Objects.hpp"
+#include "../Objects/CollisionManager.hpp"
+#include "../Scene/QuadTree.hpp"
+#include "../Config/Config.hpp"
 
 class Ant;
 class Source;

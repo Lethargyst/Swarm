@@ -1,7 +1,5 @@
-#include <iostream>
-#include <math.h>
-#include "Math/Vectors.h"
-#include "Scene/Scene.h"
+#include "Scene/Scene.hpp"
+#include "Config/Config.hpp"
 
 
 int main(int argc, char* argv[])
@@ -17,9 +15,7 @@ int main(int argc, char* argv[])
 
     Scene& scene = Scene::initialize(&window);
     
-    int antsNum;
-    sscanf(argv[1], "%i", &antsNum);
-    scene.initSwarm(antsNum, 2);
+    scene.initSwarm(global.ants_amount, global.sources_amount);
 
     float lastTime = 0.0f;
     float alpha = 1.0f; 
@@ -28,7 +24,7 @@ int main(int argc, char* argv[])
         double time = glfwGetTime();
         double deltaTime = time - lastTime;
 
-        if (deltaTime >= MAX_PERIOD) {
+        if (deltaTime >= global.max_period) {
             lastTime = time;
             alpha += 0.001f;
             scene.update(1.0f);

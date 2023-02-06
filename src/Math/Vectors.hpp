@@ -1,8 +1,8 @@
-#ifndef VECTORS_H
-#define VECTORS_H
+#ifndef VECTORS_HPP
+#define VECTORS_HPP
 
 #include <cmath> 
-#include "Algebra.h"
+#include "Algebra.hpp"
 
 struct vec2 
 {

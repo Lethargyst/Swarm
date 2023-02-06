@@ -1,7 +1,7 @@
-#include "Scene.h"
+#include "Scene.hpp"
 
-float* Scene::objectsRenderBuffer = new float[RENDER_BUFFER_SIZE];
-float* Scene::quadTreeRenderBuffer = new float[QUAD_TREE_BUFFER_SIZE];
+float* Scene::objectsRenderBuffer = new float[global.render_buffer_size];
+float* Scene::quadTreeRenderBuffer = new float[global.quad_tree_buffer_size];
 
 Scene::~Scene() 
 { 
@@ -30,7 +30,7 @@ void Scene::initBuffers()
     // [..., pos.x, pos.y, size, color.x, color.y, color.z, ...] 
     glBindVertexArray(VAO_[0]);
     glBindBuffer(GL_ARRAY_BUFFER, VBO_[0]);
-    glBufferData(GL_ARRAY_BUFFER, RENDER_BUFFER_SIZE, objectsRenderBuffer, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, global.render_buffer_size, objectsRenderBuffer, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr); // object coordinates
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(2 * sizeof(float))); // object size
@@ -40,7 +40,7 @@ void Scene::initBuffers()
     // quad tree render buffer: [..., pos.x, pos.y, size.x, size.y, ...]
     glBindVertexArray(VAO_[1]);
     glBindBuffer(GL_ARRAY_BUFFER, VBO_[1]);
-    glBufferData(GL_ARRAY_BUFFER, QUAD_TREE_BUFFER_SIZE, quadTreeRenderBuffer, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, global.quad_tree_buffer_size, quadTreeRenderBuffer, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
@@ -48,7 +48,7 @@ void Scene::initBuffers()
     // shoutlines render buffer: [..., pos.x, pos.y, ...]
     glBindVertexArray(VAO_[2]);
     glBindBuffer(GL_ARRAY_BUFFER, VBO_[2]);
-    glBufferData(GL_ARRAY_BUFFER, SHOUT_LINES_BUFFER_SIZE, swarm.shoutLinesRenderBuffer, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, global.shout_lines_buffer_size, swarm.shoutLinesRenderBuffer, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
 }

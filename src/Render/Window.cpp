@@ -1,4 +1,4 @@
-#include "Window.h"
+#include "Window.hpp"
 
 Rectangle2d Window::bounds;
 int Window::width = 0;

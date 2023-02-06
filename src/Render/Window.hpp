@@ -1,12 +1,12 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#ifndef WINDOW_HPP
+#define WINDOW_HPP
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <string>
 #include <iostream>
-#include "../Math/Vectors.h"
-#include "../Objects/Geometry2D.h"
+#include "../Math/Vectors.hpp"
+#include "../Objects/Geometry2D.hpp"
 
 
 class Window

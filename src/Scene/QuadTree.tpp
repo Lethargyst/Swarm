@@ -1,13 +1,13 @@
-#ifndef QUAD_TREE_TEMPLATES_H
-#define QUAD_TREE_TEMPLATES_H
+#ifndef QUAD_TREE_TEMPLATES_TPP
+#define QUAD_TREE_TEMPLATES_TPP
 
 using namespace QuadTree;
 
 template<typename Type>
-unsigned QuadTreeNode<Type>::maxDepth = MAX_DEPTH;
+unsigned QuadTreeNode<Type>::maxDepth = global.max_depth;
 
 template<typename Type>
-unsigned QuadTreeNode<Type>::maxObjectsPerNode = MAX_OBJECTS_PER_NODE;
+unsigned QuadTreeNode<Type>::maxObjectsPerNode = global.max_objects_per_node;
 
 template<typename Type>
 unsigned QuadTreeNode<Type>::objectsAmount = 0;

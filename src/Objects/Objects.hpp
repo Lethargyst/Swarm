@@ -1,10 +1,11 @@
-#ifndef OBJECTS_H
-#define OBJECTS_H
+#ifndef OBJECTS_HPP
+#define OBJECTS_HPP
 
 #include <vector>
-#include "../Math/Random.h"
-#include "../precompiled.h"
-#include "Geometry2D.h"
+#include "../Config/Config.hpp"
+#include "../Math/Matrices.hpp"
+#include "../Math/Random.hpp"
+#include "Geometry2D.hpp"
 
 class Object
 {
@@ -26,7 +27,7 @@ protected:
     mat2 directionMat_;
     vec2 velocity_, speedVec_;
     float speed_, direction_;
-    int movementSpread_ = MOVEMENT_SPREAD;
+    int movementSpread_ = global.movement_spread;
     int timer = 0;
     bool movingRandomly_ = true;
 };

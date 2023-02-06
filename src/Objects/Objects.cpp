@@ -1,4 +1,4 @@
-#include "Objects.h"
+#include "Objects.hpp"
 
 
 Object::Object(const vec2& pos, float speed, float size, const vec3& color)
@@ -25,7 +25,7 @@ void Object::setMovementSpread(const float radian) { movementSpread_ = radian; }
 
 void Object::update(const float alpha)
 {
-    if (movingRandomly_ && timer == TIME_TO_SPREAD_DIR) {
+    if (movingRandomly_ && timer == global.time_to_spread_dir) {
         this->changeDirection(Random::getNormalizedFloat() * 6.28f);
         timer = 0;
     }

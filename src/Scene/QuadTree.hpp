@@ -1,15 +1,14 @@
-#ifndef QUADTREE_H
-#define QUADTREE_H
+#ifndef QUADTREE_HPP
+#define QUADTREE_HPP
 
 #include <vector>
 #include <queue>
 #include <iostream>
 #include <memory>
-#include "../Objects/CollisionManager.h"
-#include "../Objects/Objects.h"
-#include "../Objects/Geometry2D.h"
-#include "../Render/Window.h"
-#include "../precompiled.h"
+#include "../Objects/CollisionManager.hpp"
+#include "../Objects/Objects.hpp"
+#include "../Objects/Geometry2D.hpp"
+#include "../Config/Config.hpp"
 
 namespace QuadTree 
 {

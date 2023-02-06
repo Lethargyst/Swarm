@@ -1,5 +1,5 @@
-#ifndef SHADER_PROGRAM
-#define SHADER_PROGRAM
+#ifndef SHADER_PROGRAM_HPP
+#define SHADER_PROGRAM_HPP
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>

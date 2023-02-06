@@ -1,9 +1,9 @@
-#ifndef MATRICES_H
-#define MATRICES_H
+#ifndef MATRICES_HPP
+#define MATRICES_HPP
 
 #include <cmath>
 #include <cstring>
-#include "Vectors.h"
+#include "Vectors.hpp"
 
 struct mat2
 {

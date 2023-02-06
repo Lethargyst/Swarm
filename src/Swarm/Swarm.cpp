@@ -1,6 +1,6 @@
-#include "Swarm.h"
+#include "Swarm.hpp"
 
-float *Swarm::shoutLinesRenderBuffer = new float[SHOUT_LINES_BUFFER_SIZE];
+float *Swarm::shoutLinesRenderBuffer = new float[global.shout_lines_buffer_size];
 int Source::amount = 0;
 int Ant::amount = 0;
 
@@ -51,7 +51,7 @@ void Ant::shout(QuadTree::QuadTreeRoot<Ant> &root, float *shoutLinesRenderBuffer
         if (target->isAbleToListen(this)) {
             bool changed = this->changeConditionOf(target);
 
-            if (changed && shoutLinesCnt * 4 + 3 < SHOUT_LINES_BUFFER_SIZE) {
+            if (changed && shoutLinesCnt * 4 + 3 < global.shout_lines_buffer_size) {
                 shoutLinesRenderBuffer[shoutLinesCnt * 4] = this->pos_.x;
                 shoutLinesRenderBuffer[shoutLinesCnt * 4 + 1] = this->pos_.y;
                 shoutLinesRenderBuffer[shoutLinesCnt * 4 + 2] = target->pos_.x;
@@ -79,28 +79,28 @@ bool Ant::changeConditionOf(Ant* target) const
     }
 
     if (target->isMovingToEven_) {
-        if (target->distanceToEven_ > this->distanceToEven_ + this->shoutRange_ + epsilon) {
+        if (target->distanceToEven_ > this->distanceToEven_ + this->shoutRange_ + global.epsilon) {
             target->distanceToEven_ = this->distanceToEven_ + this->shoutRange_;
             target->moveTo(this);
             target->changedStatus = true;
         }
-        if (target->distanceToOdd_ > this->distanceToOdd_ + this->shoutRange_ + epsilon) {
+        if (target->distanceToOdd_ > this->distanceToOdd_ + this->shoutRange_ + global.epsilon) {
             target->distanceToOdd_ = this->distanceToOdd_ + this->shoutRange_;
             target->changedStatus = true;         
         }  
     } else {
-        if (target->distanceToOdd_ > this->distanceToOdd_ + this->shoutRange_ + epsilon) {
+        if (target->distanceToOdd_ > this->distanceToOdd_ + this->shoutRange_ + global.epsilon) {
             target->distanceToOdd_ = this->distanceToOdd_ + this->shoutRange_;
             target->moveTo(this);
             target->changedStatus = true;
         }
-        if (target->distanceToEven_ > this->distanceToEven_ + this->shoutRange_ + epsilon) {
+        if (target->distanceToEven_ > this->distanceToEven_ + this->shoutRange_ + global.epsilon) {
             target->distanceToEven_ = this->distanceToEven_ + this->shoutRange_;
             target->changedStatus = true;
         }
     }
 
-    if (target->changedStatus) target->timeToShout_ = TIME_TO_SHOUT;
+    if (target->changedStatus) target->timeToShout_ = global.time_to_shout;
 
     return target->changedStatus;
 }
@@ -121,7 +121,7 @@ void Swarm::addAnts(int num)
     for (std::size_t i = 0; i < num; ++i) {
         vec2 pos = vec2(Random::getNormalizedFloat(), Random::getNormalizedFloat());
         vec3 color = vec3(0.0f, 0.0f, 0.0f);
-        Ant *ant = new Ant(pos, SHOUT_RANGE, SPEED, ANT_SIZE, color);
+        Ant *ant = new Ant(pos, global.shout_range, global.speed, global.ant_size, color);
         ants_.push_back(ant);
     }
 }
@@ -131,7 +131,7 @@ void Swarm::addSources(int num)
     for (std::size_t i = 0; i < num; ++i) {
         vec2 pos = vec2(Random::getNormalizedFloat(), Random::getNormalizedFloat());
         vec3 color = vec3(0, 0, 0);
-        sources_.push_back(new Source(pos, SOURCES_SPEED, SOURCE_SIZE,
+        sources_.push_back(new Source(pos, global.source_speed, global.source_size,
                                       color, Source::getAmount() + 1));
     }
 }
@@ -177,7 +177,7 @@ void Swarm::update(const float alpha)
                 }
 
                 ant->direction_ += M_PI;
-                ant->timeToShout_ = TIME_TO_SHOUT;
+                ant->timeToShout_ = global.time_to_shout;
                 ant->movingRandomly_ = false;
                 ant->changedStatus = true;
             }

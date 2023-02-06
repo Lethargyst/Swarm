@@ -1,7 +1,7 @@
-#ifndef GEOMETRY_2D_H
-#define GEOMETRY_2D_H
+#ifndef GEOMETRY_2D_HPP
+#define GEOMETRY_2D_HPP
 
-#include "../Math/Vectors.h"
+#include "../Math/Vectors.hpp"
 
 enum ShapeType {
     POINT2D,

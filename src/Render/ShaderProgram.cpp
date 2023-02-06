@@ -1,4 +1,4 @@
-#include "ShaderProgram.h"
+#include "ShaderProgram.hpp"
 
 namespace Renderer
 {

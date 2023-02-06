@@ -1,4 +1,4 @@
-#include "CollisionManager.h"
+#include "CollisionManager.hpp"
 
 bool CollisionManager::CircleCircle(const Circle& a, const Circle& b)
 {
