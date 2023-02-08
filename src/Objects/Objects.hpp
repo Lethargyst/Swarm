@@ -14,10 +14,11 @@ public:
     virtual ~Object() {};
 
     virtual void update(const float alpha);
-    
+
     void changeDirection(const float dir); 
     void setMovementSpread(const float radian);
 
+    bool outOfBorders(const Rectangle2d& borders) const;
     // Rectangle2d bounds_;
     Shape shape_;
     vec3 color_;

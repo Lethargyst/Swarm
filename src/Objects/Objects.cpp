@@ -34,3 +34,10 @@ void Object::update(const float alpha)
     pos_ += velocity_;
     timer++;
 }
+
+bool Object::outOfBorders(const Rectangle2d& borders) const {
+    vec2 min = borders.getMin();
+    vec2 max = borders.getMax();
+    return this->pos_.x <= min.x || this->pos_.x >= max.x ||
+           this->pos_.y <= min.y || this->pos_.y >= max.y; 
+}

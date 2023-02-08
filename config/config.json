@@ -17,12 +17,12 @@
     },
 
     "quad_tree": {
-        "max_objects_per_node": 100,
-        "max_depth": 6
+        "max_objects_per_node": 50,
+        "max_depth": 7
     },
 
     "max_fps": 60,
-    "epsilon": 0.01,
+    "epsilon": 0.0001,
     "ants_amount": 10000,
     "sources_amount": 2
 }   

@@ -106,7 +106,9 @@ bool Ant::changeConditionOf(Ant* target) const
 }
 
 void Ant::update(const float alpha)
-{
+{   
+    if (outOfBorders(Rectangle2d(0.0f, 0.0f, 1.0f, 1.0f)))
+        direction_ += M_PI_2;
     direction_ += deg2rad(rand() % movementSpread_ - movementSpread_ / 2);
     changeDirection(direction_);
     Object::update(alpha);
