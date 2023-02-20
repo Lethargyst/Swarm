@@ -7,12 +7,11 @@ set(CMAKE_CXX_STANDART 17)
 
 add_executable( ${PROJECT_NAME} 
     src/main.cpp
-    src/precompiled.hpp
     
     src/Config/Config.hpp
     src/Config/Config.cpp
     
-    src/Json/json.hpp
+    src/Config/Json/json.hpp
 
     src/Math/Algebra.hpp
     src/Math/Algebra.cpp

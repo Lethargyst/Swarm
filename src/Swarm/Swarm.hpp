@@ -1,6 +1,8 @@
 #ifndef SWARM_HPP
 #define SWARM_HPP
 
+#include <thread>
+#include <mutex>
 #include "../Math/Random.hpp"
 #include "../Objects/Objects.hpp"
 #include "../Objects/CollisionManager.hpp"
@@ -38,6 +40,7 @@ protected:
 class Ant : public Object
 { 
     friend Swarm;
+
 public:
     Ant(const vec2& pos, float shoutRange, float speed,
         float size, const vec3& color);
@@ -69,6 +72,9 @@ protected:
     bool isMovingToEven_;
     
     static int amount;
+
+private:
+    mutable std::mutex mutex_;
 };
 
 class Swarm
@@ -93,6 +99,9 @@ public:
 private:
     Swarm(const Swarm& other) = delete;
     Swarm& operator=(const Swarm& other) = delete;
+
+    void shoutBanch(std::size_t start, std::size_t end, QuadTree::QuadTreeRoot<Ant> &root);
+    void updateBanch(std::size_t start, std::size_t end, const float alpha);
 
     std::size_t shoutLinesCnt = 0;
 };

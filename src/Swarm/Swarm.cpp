@@ -47,8 +47,10 @@ void Ant::shout(QuadTree::QuadTreeRoot<Ant> &root, float *shoutLinesRenderBuffer
     std::vector<Ant *> targets;
     root.get(this->shoutArea_, targets);
 
-    for (Ant *target : targets) {
-        if (target->isAbleToListen(this)) {
+   
+    std::lock_guard<std::mutex> guard(mutex_);
+    for (Ant *target : targets) {                                                      
+        if (target->isAbleToListen(this)) {  
             bool changed = this->changeConditionOf(target);
 
             if (changed && shoutLinesCnt * 4 + 3 < global.shout_lines_buffer_size) {
@@ -151,8 +153,22 @@ void Swarm::initialize(int antsNum, int sourcesNum)
 
 void Swarm::shout(QuadTree::QuadTreeRoot<Ant> &root)
 {
+    std::vector<std::thread> threads;
     shoutLinesCnt = 0;
-    for (Ant *ant : ants_) {
+
+    for (std::size_t threadNum = 0; threadNum < global.threads_amount; ++threadNum) 
+        threads.emplace_back(&Swarm::shoutBanch, this, 
+                             Ant::getAmount() / global.threads_amount * threadNum, 
+                             Ant::getAmount() / global.threads_amount * (threadNum + 1), std::ref(root));
+    
+    for (auto& t: threads)
+        t.join();
+}
+
+void Swarm::shoutBanch(std::size_t start, std::size_t end, QuadTree::QuadTreeRoot<Ant> &root) 
+{
+    for (std::size_t i = start; i < end; ++i) {
+        Ant* ant = ants_[i];
         if (ant->timeToShout_ == 0 && !ant->movingRandomly_) 
             ant->shout(root, shoutLinesRenderBuffer, shoutLinesCnt);
 
@@ -184,7 +200,7 @@ void Swarm::update(const float alpha)
                 ant->changedStatus = true;
             }
         }
-    }
 
-    for (Ant* ant: ants_) ant->changedStatus = false;
+        ant->changedStatus = false;
+    }
 }

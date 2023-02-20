@@ -9,13 +9,12 @@
 #include "../Render/Window.hpp"
 #include "QuadTree.hpp"
 
+
 class Scene
 {
 public:
     static Scene& initialize(Window* window);
 
-    // void genAnts(GLint num);
-    // void genSources(GLint num);
     void update(const float alpha);
 
     // Updates information about the object in the objectsRenderBuffer
@@ -52,7 +51,7 @@ private:
     GLuint *VAO_, *VBO_; 
 
     bool renderingQuadTree = false;
-    bool renderingShoutLines = true;
+    bool renderingShoutLines = false;
 };
 
 

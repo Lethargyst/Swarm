@@ -1,6 +1,15 @@
 #include "Scene/Scene.hpp"
 #include "Config/Config.hpp"
+#include <sstream>
+#include <thread>
 
+void showFPS(Window& window, double deltaTime)
+{
+    double fps = 1 / deltaTime;
+    std::stringstream ss;
+    ss << "Swarm " << "[" << fps << " FPS]";
+    glfwSetWindowTitle(window.glWindow_, ss.str().c_str());
+}
 
 int main(int argc, char* argv[])
 {
@@ -27,8 +36,10 @@ int main(int argc, char* argv[])
         if (deltaTime >= global.max_period) {
             lastTime = time;
             alpha += 0.001f;
+            
             scene.update(1.0f);
             scene.render();
+            showFPS(window, deltaTime);
         }
     }
 
@@ -36,3 +47,4 @@ int main(int argc, char* argv[])
 
     return 0;
 }
+

@@ -21,8 +21,9 @@
         "max_depth": 7
     },
 
+    "threads_amount": 7,
     "max_fps": 60,
     "epsilon": 0.0001,
-    "ants_amount": 10000,
+    "ants_amount": 5000,
     "sources_amount": 2
 }   

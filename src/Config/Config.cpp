@@ -7,6 +7,7 @@ Config& Config::Instance()
     std::ifstream file("../config/config.json");
     json data = json::parse(file);
     
+    conf.threads_amount = data["threads_amount"];
     conf.max_fps = data["max_fps"];
     conf.max_period = 1.0 / conf.max_fps;
     conf.epsilon = data["epsilon"];
